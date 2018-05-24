@@ -4,12 +4,16 @@
 #include <vector>
 #include <boost/scoped_ptr.hpp>
 #include "thread/Thread.h"
+#include "datetime/Timestamp.h"
+#include "TimerId.h"
+#include "Callbacks.h"
 
 namespace muduo
 {
 
 class Channel;
 class Poller;
+class TimerQueue;
 
 class EventLoop : boost::noncopyable
 {
@@ -26,6 +30,28 @@ public:
 	void loop();
 	
 	void quit();
+	
+	///
+	/// Time when poll returns, usually means data arrivial.
+	///
+	Timestamp pollReturnTime() const { return pollReturnTime_; }
+	
+	// timers
+
+	///
+	/// Runs callback at 'time'.
+	///
+	TimerId runAt(const Timestamp& time, const TimerCallback& cb);
+	///
+	/// Runs callback after @c delay seconds.
+	///
+	TimerId runAfter(double delay, const TimerCallback& cb);
+	///
+	/// Runs callback every @c interval seconds.
+	///
+	TimerId runEvery(double interval, const TimerCallback& cb);
+
+	// void cancel(TimerId timerId);
 	
 	// internal use only
 	void updateChannel(Channel* channel);
@@ -52,7 +78,9 @@ private:
 	bool looping_; 							/* atomic */
 	bool quit_;								/* atomic */
 	const pid_t threadId_;
+	Timestamp pollReturnTime_;
 	boost::scoped_ptr<Poller> poller_;
+	boost::scoped_ptr<TimerQueue> timerQueue_;
 	ChannelList activeChannels_;
 };
 
