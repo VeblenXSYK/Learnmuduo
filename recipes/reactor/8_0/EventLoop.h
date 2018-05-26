@@ -4,6 +4,7 @@
 #include <vector>
 #include <boost/scoped_ptr.hpp>
 #include "thread/Thread.h"
+#include "thread/Mutex.h"
 #include "datetime/Timestamp.h"
 #include "TimerId.h"
 #include "Callbacks.h"
@@ -18,6 +19,8 @@ class TimerQueue;
 class EventLoop : boost::noncopyable
 {
 public:
+
+	typedef boost::function<void()> Functor;
 
 	EventLoop();
 	~EventLoop();
@@ -54,8 +57,12 @@ public:
 	// void cancel(TimerId timerId);
 	
 	// internal use only
+	void wakeup();
 	void updateChannel(Channel* channel);
 	// void removeChannel(Channel* channel);
+	
+	void runInLoop(const Functor& cb);
+	void queueInLoop(const Functor& cb);
 
 	void assertInLoopThread()
 	{
@@ -72,16 +79,25 @@ public:
 private:
 
 	void abortNotInLoopThread();
+	void handleRead();
+	void doPendingFunctors();
 	
 	typedef std::vector<Channel*> ChannelList;
 
 	bool looping_; 							/* atomic */
 	bool quit_;								/* atomic */
+	bool callingPendingFunctors_;			/* atomic */
 	const pid_t threadId_;
 	Timestamp pollReturnTime_;
 	boost::scoped_ptr<Poller> poller_;
 	boost::scoped_ptr<TimerQueue> timerQueue_;
+	int wakeupFd_;
+	// unlike in TimerQueue, which is an internal class,
+	// we don't expose Channel to client.
+	boost::scoped_ptr<Channel> wakeupChannel_;
 	ChannelList activeChannels_;
+	MutexLock mutex_;
+	std::vector<Functor> pendingFunctors_;
 };
 
 }
