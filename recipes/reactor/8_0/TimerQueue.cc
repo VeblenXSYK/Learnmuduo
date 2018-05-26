@@ -90,18 +90,26 @@ TimerQueue::~TimerQueue()
 	}
 }
 
+//线程安全
 TimerId TimerQueue::addTimer(const TimerCallback& cb,
                              Timestamp when,
                              double interval)
 {
 	Timer* timer = new Timer(cb, when, interval);
+	//调用runInLoop,把实际工作转移到IO线程来做，addTimer只负责转发
+	loop_->runInLoop(boost::bind(&TimerQueue::addTimerInLoop, this, timer));
+	return TimerId(timer);
+}
+
+//完成修改定时器列表的工作
+void TimerQueue::addTimerInLoop(Timer* timer)
+{
 	loop_->assertInLoopThread();
 	bool earliestChanged = insert(timer);
 
 	if (earliestChanged) {
 		resetTimerfd(timerfd_, timer->expiration());
 	}
-	return TimerId(timer);
 }
 
 void TimerQueue::handleRead()

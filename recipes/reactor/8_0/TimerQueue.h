@@ -45,6 +45,7 @@ private:
 	typedef std::pair<Timestamp, Timer*> Entry;
 	typedef std::set<Entry> TimerList;
 
+	void addTimerInLoop(Timer* timer);
 	// called when timerfd alarms
 	void handleRead();
 	// move out all expired timers
