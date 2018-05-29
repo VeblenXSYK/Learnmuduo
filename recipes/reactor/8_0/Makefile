@@ -1,6 +1,17 @@
-LIB_SRC = Acceptor.cc InetAddress.cc Socket.cc SocketsOps.cc EventLoop.cc EventLoopThread.cc \
-			Channel.cc Poller.cc Timer.cc TimerQueue.cc
-BINARIES = test1 test2 test3 test4 test5 test6 test7
+LIB_SRC = 			\
+	Acceptor.cc		\
+	Channel.cc		\
+	EventLoop.cc		\
+	EventLoopThread.cc	\
+	InetAddress.cc		\
+	Poller.cc		\
+	Socket.cc		\
+	SocketsOps.cc		\
+	TcpConnection.cc	\
+	TcpServer.cc		\
+	Timer.cc		\
+	TimerQueue.cc
+BINARIES = test1 test2 test3 test4 test5 test6 test7 test8
 
 all: $(BINARIES)
 
@@ -13,3 +24,4 @@ test4: test4.cc
 test5: test5.cc
 test6: test6.cc
 test7: test7.cc
+test8: test8.cc

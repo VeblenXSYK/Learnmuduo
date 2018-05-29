@@ -31,8 +31,7 @@ void setNonBlockAndCloseOnExec(int sockfd)
 	int flags = ::fcntl(sockfd, F_GETFL, 0);
 	flags |= O_NONBLOCK;
 	int ret = ::fcntl(sockfd, F_SETFL, flags);
-	if(ret == -1)
-	{
+	if(ret == -1) {
 		LOG_SYSFATAL << "setNonBlockAndCloseOnExec O_NONBLOCK";
 	}
 
@@ -40,8 +39,7 @@ void setNonBlockAndCloseOnExec(int sockfd)
 	flags = ::fcntl(sockfd, F_GETFD, 0);
 	flags |= FD_CLOEXEC;
 	ret = ::fcntl(sockfd, F_SETFD, flags);
-	if(ret == -1)
-	{
+	if(ret == -1) {
 		LOG_SYSFATAL << "setNonBlockAndCloseOnExec FD_CLOEXEC";
 	}
 }
@@ -152,5 +150,16 @@ void sockets::fromHostPort(const char* ip, uint16_t port,
 	if (::inet_pton(AF_INET, ip, &addr->sin_addr) <= 0) {
 		LOG_SYSERR << "sockets::fromHostPort";
 	}
+}
+
+struct sockaddr_in sockets::getLocalAddr(int sockfd)
+{
+	struct sockaddr_in localaddr;
+	bzero(&localaddr, sizeof localaddr);
+	socklen_t addrlen = sizeof(localaddr);
+	if (::getsockname(sockfd, sockaddr_cast(&localaddr), &addrlen) < 0) {
+		LOG_SYSERR << "sockets::getLocalAddr";
+	}
+	return localaddr;
 }
 
