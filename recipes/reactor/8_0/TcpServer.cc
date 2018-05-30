@@ -14,7 +14,7 @@ using namespace muduo;
 TcpServer::TcpServer(EventLoop* loop, const InetAddress& listenAddr)
 	: loop_(CHECK_NOTNULL(loop)),
 	  name_(listenAddr.toHostPort()),
-	  acceptor_(new Acceptor(loop, listenAddr)),
+	  acceptor_(new Acceptor(loop, listenAddr)),	//创建socket
 	  started_(false),
 	  nextConnId_(1)
 {
@@ -65,6 +65,26 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr)
 	//设置回调
 	conn->setConnectionCallback(connectionCallback_);
 	conn->setMessageCallback(messageCallback_);
+	conn->setCloseCallback(boost::bind(&TcpServer::removeConnection, this, _1));	//这个回调是给内部调用的
 	conn->connectEstablished();
+}
+
+/*
+	移除所持有的TcpConnectionPtr
+*/
+void TcpServer::removeConnection(const TcpConnectionPtr& conn)
+{
+	loop_->assertInLoopThread();
+	LOG_INFO << "TcpServer::removeConnection [" << name_ << "] - connection " << conn->name();
+	size_t n = connections_.erase(conn->name());								//把conn从ConnectionMap中移除，conn引用计数降到1
+	assert(n == 1); (void)n;
+	
+	//在EventLoop中执行TcpConnection::connectDestroyed
+	loop_->queueInLoop(boost::bind(&TcpConnection::connectDestroyed, conn));	//boost::bind延长conn的生命周期
+	
+	/*
+		Channel::handleEvent中执行TcpConnection::connectDestroyed析构Channel，会产生问题
+	*/
+	//loop_->runInLoop(boost::bind(&TcpConnection::connectDestroyed, conn));	
 }
 

@@ -1,7 +1,9 @@
 #include "TcpServer.h"
 #include "EventLoop.h"
 #include "InetAddress.h"
+#include "logging/Logging.h"
 #include <stdio.h>
+
 
 void onConnection(const muduo::TcpConnectionPtr& conn)
 {
@@ -25,6 +27,8 @@ void onMessage(const muduo::TcpConnectionPtr& conn,
 
 int main()
 {
+	muduo::Logger::setLogLevel(muduo::Logger::TRACE); 
+	
 	printf("main(): pid = %d\n", getpid());
 
 	muduo::InetAddress listenAddr(9981);

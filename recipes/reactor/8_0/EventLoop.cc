@@ -17,7 +17,7 @@ __thread EventLoop *t_loopInThisThread = 0;
 const int kPollTimeMs = 10000;
 
 /*
-	用eventfd是因为它比管道更高效，不必管理缓冲区
+	使用eventfd更高效地(相比于管道)唤醒阻塞在poll调用的IO线程
 */
 static int createEventfd()
 {
@@ -36,8 +36,8 @@ EventLoop::EventLoop()
 				  callingPendingFunctors_(false),
 				  threadId_(CurrentThread::tid()),
 				  poller_(new Poller(this)),
-				  timerQueue_(new TimerQueue(this)),
-				  wakeupFd_(createEventfd()),
+				  timerQueue_(new TimerQueue(this)),			//创建timerfd
+				  wakeupFd_(createEventfd()),					//创建eventfd
 				  wakeupChannel_(new Channel(this, wakeupFd_))
 				  
 {
@@ -131,8 +131,6 @@ void EventLoop::queueInLoop(const Functor& cb)
 	{
 		wakeup();
 	}
-	
-	//wakeup();
 }
 
 void EventLoop::doPendingFunctors()
@@ -197,6 +195,13 @@ void EventLoop::updateChannel(Channel* channel)
 	assert(channel->ownerLoop() == this);
 	assertInLoopThread();
 	poller_->updateChannel(channel);
+}
+
+void EventLoop::removeChannel(Channel* channel)
+{
+	assert(channel->ownerLoop() == this);
+	assertInLoopThread();
+	poller_->removeChannel(channel);
 }
 
 void EventLoop::abortNotInLoopThread()

@@ -64,31 +64,42 @@ public:
 	{
 		messageCallback_ = cb;
 	}
+	
+	void setCloseCallback(const CloseCallback& cb)
+	{
+		closeCallback_ = cb;
+	}
 
 	/// Internal use only.
 
 	// called when TcpServer accepts a new connection
 	void connectEstablished();   // should be called only once
+	// called when TcpServer has removed me from its map
+	void connectDestroyed();  // should be called only once
 
 private:
-	enum StateE { kConnecting, kConnected, };
+	enum StateE { kConnecting, kConnected, kDisconnected };
 
 	void setState(StateE s)
 	{
 		state_ = s;
 	}
 	void handleRead();
+	void handleWrite();
+	void handleClose();
+	void handleError();
 
 	EventLoop* loop_;
 	std::string name_;				//连接名称(ipaddr:port#序号)
 	StateE state_;  // FIXME: use atomic variable
 	// we don't expose those classes to client.
-	boost::scoped_ptr<Socket> socket_;
-	boost::scoped_ptr<Channel> channel_;
+	boost::scoped_ptr<Socket> socket_;			//TcpConnection析构后会调用Socket的析构函数，其会关闭socket连接
+	boost::scoped_ptr<Channel> channel_;		//TcpConnection析构后会调用Channel的析构函数
 	InetAddress localAddr_;			//本地地址(ipaddr:port)
 	InetAddress peerAddr_;			//远程地址(ipaddr:port)
 	ConnectionCallback connectionCallback_;
 	MessageCallback messageCallback_;
+	CloseCallback closeCallback_;
 };
 
 typedef boost::shared_ptr<TcpConnection> TcpConnectionPtr;

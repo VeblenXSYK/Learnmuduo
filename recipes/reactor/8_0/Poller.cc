@@ -36,8 +36,7 @@ Timestamp Poller::poll(int timeoutMs, ChannelList *activeChannels)
 
 void Poller::fillActiveChannels(int numEvents, ChannelList* activeChannels) const
 {
-	for (PollFdList::const_iterator pfd = pollfds_.begin(); pfd != pollfds_.end() && numEvents > 0; ++pfd) 
-	{
+	for (PollFdList::const_iterator pfd = pollfds_.begin(); pfd != pollfds_.end() && numEvents > 0; ++pfd) {
 		if (pfd->revents > 0) {
 			--numEvents;
 			ChannelMap::const_iterator ch = channels_.find(pfd->fd);
@@ -52,7 +51,7 @@ void Poller::fillActiveChannels(int numEvents, ChannelList* activeChannels) cons
 }
 
 /*
-	负责维护和更新pollfds_数组
+	负责在pollfds_数组中添加或者更新Channel
 */
 void Poller::updateChannel(Channel* channel)
 {
@@ -60,14 +59,17 @@ void Poller::updateChannel(Channel* channel)
 	LOG_TRACE << "fd = " << channel->fd() << " events = " << channel->events();
 	if (channel->index() < 0) {
 		// a new one, add to pollfds_
-		assert(channels_.find(channel->fd()) == channels_.end());
+		assert(channels_.find(channel->fd()) == channels_.end());	//map中存在按k索引的元素，则返回指向该元素的iterator；如果不存在则返回end()
+		//设置pollfd
 		struct pollfd pfd;
 		pfd.fd = channel->fd();
 		pfd.events = static_cast<short>(channel->events());
 		pfd.revents = 0;
 		pollfds_.push_back(pfd);
+		//设置该Channel在pollfds_的下标
 		int idx = static_cast<int>(pollfds_.size())-1;
 		channel->set_index(idx);
+		//以<文件描述符，Channel*>方式存储在ChannelMap中
 		channels_[pfd.fd] = channel;
 	} else {
 		// update existing one
@@ -76,13 +78,48 @@ void Poller::updateChannel(Channel* channel)
 		int idx = channel->index();
 		assert(0 <= idx && idx < static_cast<int>(pollfds_.size()));
 		struct pollfd& pfd = pollfds_[idx];
-		assert(pfd.fd == channel->fd() || pfd.fd == -1);
+		//assert(pfd.fd == channel->fd() || pfd.fd == -1);
+		assert(pfd.fd == channel->fd() || pfd.fd == -channel->fd() - 1);
 		pfd.events = static_cast<short>(channel->events());
 		pfd.revents = 0;
 		if (channel->isNoneEvent()) {
 			// ignore this pollfd
-			pfd.fd = -1;
+			//pfd.fd = -1;
+			pfd.fd = -channel->fd() - 1;
 		}
+	}
+}
+
+/*
+	负责在pollfds_数组中删除Channel
+*/
+void Poller::removeChannel(Channel* channel)
+{
+	assertInLoopThread();
+	LOG_TRACE << "fd = " << channel->fd();
+	assert(channels_.find(channel->fd()) != channels_.end());
+	assert(channels_[channel->fd()] == channel);
+	assert(channel->isNoneEvent());
+	int idx = channel->index();
+	assert(0 <= idx && idx < static_cast<int>(pollfds_.size()));
+	const struct pollfd& pfd = pollfds_[idx];
+	(void)pfd;
+	assert(pfd.fd == -channel->fd()-1 && pfd.events == channel->events());
+	size_t n = channels_.erase(channel->fd());
+	assert(n == 1);
+	(void)n;
+	if (implicit_cast<size_t>(idx) == pollfds_.size()-1) {
+		//假如恰好在最后
+		pollfds_.pop_back();
+	} else {
+		int channelAtEnd = pollfds_.back().fd;
+		//将待删除的元素与最后一个元素交换
+		iter_swap(pollfds_.begin()+idx, pollfds_.end()-1);
+		if (channelAtEnd < 0) {
+			channelAtEnd = -channelAtEnd-1;
+		}
+		channels_[channelAtEnd]->set_index(idx);
+		pollfds_.pop_back();
 	}
 }
 

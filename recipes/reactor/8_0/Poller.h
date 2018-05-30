@@ -18,7 +18,7 @@ class Channel;
 /// IO Multiplexing with poll(2).
 ///
 /// This class doesn't own the Channel objects.
-/// 每个Poller对象只负责IO复用
+/// 每个Poller对象只负责IO复用(即poll)
 class Poller : boost::noncopyable
 {
 public:
@@ -34,6 +34,9 @@ public:
 	/// Changes the interested I/O events.
 	/// Must be called in the loop thread.
 	void updateChannel(Channel* channel);
+	/// Remove the channel, when it destructs.
+	/// Must be called in the loop thread.
+	void removeChannel(Channel* channel);
 
 	void assertInLoopThread()
 	{
@@ -44,7 +47,7 @@ private:
 	void fillActiveChannels(int numEvents, ChannelList *activeChannels) const;
 
 	typedef std::vector<struct pollfd> PollFdList;
-	typedef std::map<int, Channel*> ChannelMap;
+	typedef std::map<int, Channel*> ChannelMap;		//<文件描述符，Channel*>
 
 	EventLoop* ownerLoop_;
 	PollFdList pollfds_;

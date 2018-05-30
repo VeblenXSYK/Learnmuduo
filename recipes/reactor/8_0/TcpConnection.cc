@@ -4,6 +4,7 @@
 #include "Channel.h"
 #include "EventLoop.h"
 #include "Socket.h"
+#include "SocketsOps.h"
 
 #include <boost/bind.hpp>
 
@@ -28,6 +29,9 @@ TcpConnection::TcpConnection(EventLoop* loop,
 	LOG_DEBUG << "TcpConnection::ctor[" <<  name_ << "] at " << this
 	          << " fd=" << sockfd;
 	channel_->setReadCallback(boost::bind(&TcpConnection::handleRead, this));
+	channel_->setWriteCallback(boost::bind(&TcpConnection::handleWrite, this));
+	channel_->setCloseCallback(boost::bind(&TcpConnection::handleClose, this));
+	channel_->setErrorCallback(boost::bind(&TcpConnection::handleError, this));
 }
 
 TcpConnection::~TcpConnection()
@@ -43,14 +47,59 @@ void TcpConnection::connectEstablished()
 	setState(kConnected);
 	channel_->enableReading();
 
+	//回调普通用户定义的函数
 	connectionCallback_(shared_from_this());
+}
+
+void TcpConnection::connectDestroyed()
+{
+	loop_->assertInLoopThread();
+	assert(state_ == kConnected);
+	setState(kDisconnected);
+	channel_->disableAll();
+	//LOG_DEBUG << "TcpConnection::connectDestroyed " << shared_from_this().use_count();
+	connectionCallback_(shared_from_this());
+
+	loop_->removeChannel(get_pointer(channel_));
 }
 
 void TcpConnection::handleRead()
 {
 	char buf[65536];
 	ssize_t n = ::read(channel_->fd(), buf, sizeof buf);
-	messageCallback_(shared_from_this(), buf, n);
-	// FIXME: close connection if n == 0
+	if (n > 0)
+	{
+		messageCallback_(shared_from_this(), buf, n);
+	}
+	else if(n == 0)
+	{
+		handleClose();
+	}
+	else
+	{
+		handleError();
+	}
+}
+
+void TcpConnection::handleWrite()
+{
+}
+
+void TcpConnection::handleClose()
+{
+	loop_->assertInLoopThread();
+	LOG_TRACE << "TcpConnection::handleClose state = " << state_;
+	assert(state_ == kConnected);
+	// we don't close fd, leave it to dtor, so we can find leaks easily.
+	channel_->disableAll();
+	// must be the last line
+	closeCallback_(shared_from_this());
+}
+
+void TcpConnection::handleError()
+{
+	int err = sockets::getSocketError(channel_->fd());
+	LOG_ERROR << "TcpConnection::handleError [" << name_
+			<< "] - SO_ERROR = " << err << " " << strerror_tl(err);
 }
 

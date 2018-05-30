@@ -15,13 +15,14 @@ class EventLoop;
 /// This class doesn't own the file descriptor.
 /// The file descriptor could be a socket,
 /// an eventfd, a timerfd, or a signalfd
-/// 每个Channel对象只负责一个IO事件分发，且该对象只属于某一个IO线程
+/// 每个Channel对象只负责一个IO事件分发(即只管理一个文件描述符)，且该对象只属于某一个IO线程
 class Channel : boost::noncopyable
 {
 public:
 	typedef boost::function<void()> EventCallback;
 
 	Channel(EventLoop* loop, int fd);
+	~Channel();
 
 	void handleEvent();
 	void setReadCallback(const EventCallback& cb)
@@ -35,6 +36,10 @@ public:
 	void setErrorCallback(const EventCallback& cb)
 	{
 		errorCallback_ = cb;
+	}
+	void setCloseCallback(const EventCallback& cb)
+	{
+		closeCallback_ = cb;
 	}
 
 	int fd() const
@@ -61,7 +66,7 @@ public:
 	}
 	// void enableWriting() { events_ |= kWriteEvent; update(); }
 	// void disableWriting() { events_ &= ~kWriteEvent; update(); }
-	// void disableAll() { events_ = kNoneEvent; update(); }
+	void disableAll() { events_ = kNoneEvent; update(); }
 
 	// for Poller
 	int index()
@@ -86,14 +91,17 @@ private:
 	static const int kWriteEvent;
 
 	EventLoop* loop_;
-	const int  fd_;
+	const int  fd_;				//需要管理的文件描述符
 	int        events_;			//关心的IO事件，由用户设置
 	int        revents_;		//目前活动的事件，由EventLoop/Poller设置
-	int        index_; 			// used by Poller.
+	int        index_; 			//该Channel在pollfds_中位置的下标
+	
+	bool eventHandling_;
 
 	EventCallback readCallback_;
 	EventCallback writeCallback_;
 	EventCallback errorCallback_;
+	EventCallback closeCallback_;
 };
 
 }
