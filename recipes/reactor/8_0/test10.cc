@@ -60,6 +60,9 @@ int main(int argc, char* argv[])
 	muduo::TcpServer server(&loop, listenAddr);
 	server.setConnectionCallback(onConnection);
 	server.setMessageCallback(onMessage);
+	if (argc > 3) {
+		server.setThreadNum(atoi(argv[3]));
+	}
 	server.start();
 
 	loop.loop();
