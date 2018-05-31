@@ -49,7 +49,7 @@ EventLoop::EventLoop()
 	} else {
 		t_loopInThisThread = this;
 	}
-	wakeupChannel_->setReadCallback(boost::bind(&EventLoop::handleRead, this));
+	wakeupChannel_->setReadCallback(boost::bind(&EventLoop::handleRead, this));		//用来读eventfd
 	// we are always reading the wakeupfd
 	wakeupChannel_->enableReading();
 }

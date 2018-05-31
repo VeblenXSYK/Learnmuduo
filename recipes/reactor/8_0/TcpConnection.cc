@@ -28,7 +28,7 @@ TcpConnection::TcpConnection(EventLoop* loop,
 {
 	LOG_DEBUG << "TcpConnection::ctor[" <<  name_ << "] at " << this
 	          << " fd=" << sockfd;
-	channel_->setReadCallback(boost::bind(&TcpConnection::handleRead, this, _1));
+	channel_->setReadCallback(boost::bind(&TcpConnection::handleRead, this, _1));	//用来读普通的TCP socket
 	channel_->setWriteCallback(boost::bind(&TcpConnection::handleWrite, this));
 	channel_->setCloseCallback(boost::bind(&TcpConnection::handleClose, this));
 	channel_->setErrorCallback(boost::bind(&TcpConnection::handleError, this));
@@ -38,6 +38,72 @@ TcpConnection::~TcpConnection()
 {
 	LOG_DEBUG << "TcpConnection::dtor[" <<  name_ << "] at " << this
 	          << " fd=" << channel_->fd();
+}
+
+void TcpConnection::send(const std::string & message)
+{
+	if (state_ == kConnected){
+		if (loop_->isInLoopThread()){
+			sendInLoop(message);
+		}else{
+			/*
+				如果在非IO线程调用，它会复制message一份，传给IO线程中的sendInLoop()来发送
+			*/
+			loop_->runInLoop(boost::bind(&TcpConnection::sendInLoop, this, message));
+		}
+	}
+}
+
+void TcpConnection::sendInLoop(const std::string& message)
+{
+	loop_->assertInLoopThread();
+	ssize_t nwrote = 0;
+	// if no thing in output queue, try writing directly
+	if (!channel_->isWriting() && outputBuffer_.readableBytes() == 0){
+		//先直接发送数据
+		nwrote = ::write(channel_->fd(), message.data(), message.size());
+		if (nwrote >= 0){
+			if (implicit_cast<size_t>(nwrote) < message.size()){
+				LOG_TRACE << "I am going to write more data";
+			}
+		}else{
+			nwrote = 0;
+			if (errno != EWOULDBLOCK){
+				LOG_SYSERR << "TcpConnection::sendInLoop";
+			}
+		}
+	}
+	
+	assert(nwrote >= 0);
+	if (implicit_cast<size_t>(nwrote) < message.size()){
+		//如果只发送部分数据则把剩余的数据放入outputBuffer_
+		outputBuffer_.append(message.data()+nwrote, message.size()-nwrote);
+		if (!channel_->isWriting()){
+			//关注write事件，以后在handlerWrite()中发送剩余的数据
+			channel_->enableWriting();
+		}
+	}
+}
+
+void TcpConnection::shutdown()
+{
+	// FIXME: use compare and swap
+	if (state_ == kConnected)
+	{
+		setState(kDisconnecting);
+		// FIXME: shared_from_this()?
+		loop_->runInLoop(boost::bind(&TcpConnection::shutdownInLoop, this));
+	}
+}
+
+void TcpConnection::shutdownInLoop()
+{
+	loop_->assertInLoopThread();
+	if (!channel_->isWriting())
+	{
+		//如果当前没有写入，则关闭写入端
+		socket_->shutdownWrite();
+	}
 }
 
 void TcpConnection::connectEstablished()
@@ -85,6 +151,26 @@ void TcpConnection::handleRead(Timestamp receiveTime)
 
 void TcpConnection::handleWrite()
 {
+	loop_->assertInLoopThread();
+	if (channel_->isWriting()){
+		ssize_t n = ::write(channel_->fd(), outputBuffer_.peek(), outputBuffer_.readableBytes());
+		if ( n > 0){
+			outputBuffer_.retrieve(n);
+			if (outputBuffer_.readableBytes() == 0){
+				//一旦数据发送完毕，立刻停止观察write事件，避免busy loop
+				channel_->disableWriting();
+				if (state_ == kDisconnecting){
+					shutdownInLoop();
+				}
+			}else{
+				LOG_TRACE << "I am going to write more data";
+			}
+		}else{
+			LOG_SYSERR << "TcpConnection::handleWrite";
+		}
+	}else{
+		LOG_TRACE << "Connection is down, no more writing";
+	}
 }
 
 void TcpConnection::handleClose()

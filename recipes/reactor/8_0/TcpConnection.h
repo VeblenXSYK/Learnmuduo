@@ -54,6 +54,12 @@ public:
 	{
 		return state_ == kConnected;
 	}
+	
+	//void send(const void* message, size_t len);
+	// Thread safe.
+	void send(const std::string& message);
+	// Thread safe.
+	void shutdown();
 
 	void setConnectionCallback(const ConnectionCallback& cb)
 	{
@@ -78,7 +84,7 @@ public:
 	void connectDestroyed();  // should be called only once
 
 private:
-	enum StateE { kConnecting, kConnected, kDisconnected };
+	enum StateE { kConnecting, kConnected, kDisconnecting, kDisconnected };
 
 	void setState(StateE s)
 	{
@@ -88,6 +94,8 @@ private:
 	void handleWrite();
 	void handleClose();
 	void handleError();
+	void sendInLoop(const std::string& message);
+	void shutdownInLoop();
 
 	EventLoop* loop_;
 	std::string name_;				//连接名称(ipaddr:port#序号)
@@ -101,6 +109,7 @@ private:
 	MessageCallback messageCallback_;
 	CloseCallback closeCallback_;
 	Buffer inputBuffer_;			//读取数据的缓冲区
+	Buffer outputBuffer_;			//发送数据的缓冲区
 };
 
 typedef boost::shared_ptr<TcpConnection> TcpConnectionPtr;

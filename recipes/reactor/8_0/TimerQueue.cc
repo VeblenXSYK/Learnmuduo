@@ -76,7 +76,7 @@ TimerQueue::TimerQueue(EventLoop* loop)
 	  timerfdChannel_(loop, timerfd_),
 	  timers_()
 {
-	timerfdChannel_.setReadCallback(boost::bind(&TimerQueue::handleRead, this));
+	timerfdChannel_.setReadCallback(boost::bind(&TimerQueue::handleRead, this));	//用来读timerfd
 	// we are always reading the timerfd, we disarm it with timerfd_settime.
 	timerfdChannel_.enableReading();
 }
