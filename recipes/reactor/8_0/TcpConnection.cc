@@ -28,7 +28,7 @@ TcpConnection::TcpConnection(EventLoop* loop,
 {
 	LOG_DEBUG << "TcpConnection::ctor[" <<  name_ << "] at " << this
 	          << " fd=" << sockfd;
-	channel_->setReadCallback(boost::bind(&TcpConnection::handleRead, this));
+	channel_->setReadCallback(boost::bind(&TcpConnection::handleRead, this, _1));
 	channel_->setWriteCallback(boost::bind(&TcpConnection::handleWrite, this));
 	channel_->setCloseCallback(boost::bind(&TcpConnection::handleClose, this));
 	channel_->setErrorCallback(boost::bind(&TcpConnection::handleError, this));
@@ -63,13 +63,13 @@ void TcpConnection::connectDestroyed()
 	loop_->removeChannel(get_pointer(channel_));
 }
 
-void TcpConnection::handleRead()
+void TcpConnection::handleRead(Timestamp receiveTime)
 {
-	char buf[65536];
-	ssize_t n = ::read(channel_->fd(), buf, sizeof buf);
+	int savedErrno = 0;
+	ssize_t n = inputBuffer_.readFd(channel_->fd(), &savedErrno);
 	if (n > 0)
 	{
-		messageCallback_(shared_from_this(), buf, n);
+		messageCallback_(shared_from_this(), &inputBuffer_, receiveTime);
 	}
 	else if(n == 0)
 	{
@@ -77,6 +77,8 @@ void TcpConnection::handleRead()
 	}
 	else
 	{
+		errno = savedErrno;
+		LOG_SYSERR << "TcpConnection::handleRead";
 		handleError();
 	}
 }

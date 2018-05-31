@@ -84,7 +84,7 @@ private:
 	{
 		state_ = s;
 	}
-	void handleRead();
+	void handleRead(Timestamp receiveTime);
 	void handleWrite();
 	void handleClose();
 	void handleError();
@@ -100,6 +100,7 @@ private:
 	ConnectionCallback connectionCallback_;
 	MessageCallback messageCallback_;
 	CloseCallback closeCallback_;
+	Buffer inputBuffer_;			//读取数据的缓冲区
 };
 
 typedef boost::shared_ptr<TcpConnection> TcpConnectionPtr;

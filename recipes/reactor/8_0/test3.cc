@@ -7,22 +7,23 @@
 
 muduo::EventLoop *g_loop;
 
-void timeoutA()
+
+void timeoutA(muduo::Timestamp receiveTime)
 {
-	LOG_TRACE << "TimeoutA";
+	LOG_TRACE << receiveTime.toFormattedString().c_str() << " TimeoutA";
 	//g_loop->quit();
 }
 
-void timeoutB()
+void timeoutB(muduo::Timestamp receiveTime)
 {
-	LOG_TRACE << "TimeoutB";
+	LOG_TRACE << receiveTime.toFormattedString().c_str() << " TimeoutB";
 	//g_loop->quit();
 }
 
 int g_timerfdC;
-void timeoutC()
+void timeoutC(muduo::Timestamp receiveTime)
 {
-	LOG_TRACE << "TimeoutC";
+	LOG_TRACE << receiveTime.toFormattedString().c_str() << " TimeoutC";
 	
 	//避免level trigger导致poll下次会被立刻触发
 	char buf[1024] = {0};
@@ -57,6 +58,8 @@ int main()
 {
 	//设置日志显示等级
 	muduo::Logger::setLogLevel(muduo::Logger::TRACE); 
+	
+	LOG_TRACE << muduo::Timestamp::now().toFormattedString().c_str() << " started";
 	
 	// //创建一个线程
 	// muduo::Thread thread(threadFunc);

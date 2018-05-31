@@ -88,7 +88,7 @@ private:
 	bool quit_;								/* atomic */
 	bool callingPendingFunctors_;			/* atomic */
 	const pid_t threadId_;
-	Timestamp pollReturnTime_;
+	Timestamp pollReturnTime_;				//从poll返回的时刻
 	boost::scoped_ptr<Poller> poller_;
 	boost::scoped_ptr<TimerQueue> timerQueue_;
 	int wakeupFd_;
