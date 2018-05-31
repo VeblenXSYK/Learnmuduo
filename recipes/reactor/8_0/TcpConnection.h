@@ -3,6 +3,7 @@
 
 #include "Callbacks.h"
 #include "InetAddress.h"
+#include "Buffer.h"
 
 #include <boost/any.hpp>
 #include <boost/enable_shared_from_this.hpp>
@@ -60,6 +61,7 @@ public:
 	void send(const std::string& message);
 	// Thread safe.
 	void shutdown();
+	void setTcpNoDelay(bool on);
 
 	void setConnectionCallback(const ConnectionCallback& cb)
 	{
@@ -69,6 +71,11 @@ public:
 	void setMessageCallback(const MessageCallback& cb)
 	{
 		messageCallback_ = cb;
+	}
+	
+	void setWriteCompleteCallback(const WriteCompleteCallback& cb)
+	{
+		writeCompleteCallback_ = cb; 
 	}
 	
 	void setCloseCallback(const CloseCallback& cb)
@@ -108,6 +115,7 @@ private:
 	ConnectionCallback connectionCallback_;
 	MessageCallback messageCallback_;
 	CloseCallback closeCallback_;
+	WriteCompleteCallback writeCompleteCallback_;
 	Buffer inputBuffer_;			//读取数据的缓冲区
 	Buffer outputBuffer_;			//发送数据的缓冲区
 };

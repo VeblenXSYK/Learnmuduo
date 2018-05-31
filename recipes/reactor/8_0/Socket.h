@@ -44,6 +44,8 @@ public:
 	void setReuseAddr(bool on);
 	
 	void shutdownWrite();
+	
+	void setTcpNoDelay(bool on);
 
 private:
 	const int sockfd_;

@@ -66,6 +66,9 @@ void TcpConnection::sendInLoop(const std::string& message)
 			if (implicit_cast<size_t>(nwrote) < message.size()){
 				LOG_TRACE << "I am going to write more data";
 			}
+			else if(writeCompleteCallback_){
+				loop_->queueInLoop(boost::bind(writeCompleteCallback_, shared_from_this()));
+			}
 		}else{
 			nwrote = 0;
 			if (errno != EWOULDBLOCK){
@@ -94,6 +97,11 @@ void TcpConnection::shutdown()
 		// FIXME: shared_from_this()?
 		loop_->runInLoop(boost::bind(&TcpConnection::shutdownInLoop, this));
 	}
+}
+
+void TcpConnection::setTcpNoDelay(bool on)
+{
+	socket_->setTcpNoDelay(on);
 }
 
 void TcpConnection::shutdownInLoop()
@@ -159,6 +167,9 @@ void TcpConnection::handleWrite()
 			if (outputBuffer_.readableBytes() == 0){
 				//一旦数据发送完毕，立刻停止观察write事件，避免busy loop
 				channel_->disableWriting();
+				if (writeCompleteCallback_){
+					loop_->queueInLoop(boost::bind(writeCompleteCallback_, shared_from_this()));
+				}
 				if (state_ == kDisconnecting){
 					shutdownInLoop();
 				}

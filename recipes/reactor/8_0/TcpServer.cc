@@ -65,6 +65,7 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr)
 	//设置回调
 	conn->setConnectionCallback(connectionCallback_);
 	conn->setMessageCallback(messageCallback_);
+	conn->setWriteCompleteCallback(writeCompleteCallback_);
 	conn->setCloseCallback(boost::bind(&TcpServer::removeConnection, this, _1));	//这个回调是给内部调用的
 	conn->connectEstablished();
 }

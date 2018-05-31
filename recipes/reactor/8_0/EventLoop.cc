@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <signal.h>
 #include <sys/eventfd.h>
 #include <boost/bind.hpp>
 #include "EventLoop.h"
@@ -16,6 +17,19 @@ __thread EventLoop *t_loopInThisThread = 0;
 //定义poll系统调用的超时时间
 const int kPollTimeMs = 10000;
 
+
+class IgnoreSigPipe
+{
+public:
+	IgnoreSigPipe()
+	{
+		::signal(SIGPIPE, SIG_IGN);
+	}
+};
+//使用C++全局对象在程序开始的时候忽略SIGPIPE
+IgnoreSigPipe initObj;		
+
+
 /*
 	使用eventfd更高效地(相比于管道)唤醒阻塞在poll调用的IO线程
 */
@@ -29,6 +43,7 @@ static int createEventfd()
 	}
 	return evtfd;
 }
+
 
 EventLoop::EventLoop() 
 				: looping_(false), 

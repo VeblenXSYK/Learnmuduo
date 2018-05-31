@@ -12,7 +12,7 @@ LIB_SRC = 			\
 	TcpServer.cc		\
 	Timer.cc		\
 	TimerQueue.cc
-BINARIES = test1 test2 test3 test4 test5 test6 test7 test8 test9 test10
+BINARIES = test1 test2 test3 test4 test5 test6 test7 test8 test9 test10 test11
 
 all: $(BINARIES)
 
@@ -28,3 +28,4 @@ test7: test7.cc
 test8: test8.cc
 test9: test9.cc
 test10: test10.cc
+test11: test11.cc

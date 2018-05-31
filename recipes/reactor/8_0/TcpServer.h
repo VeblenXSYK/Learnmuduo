@@ -40,6 +40,13 @@ public:
 	{
 		messageCallback_ = cb;
 	}
+	
+	/// Set write complete callback.
+	/// Not thread safe.
+	void setWriteCompleteCallback(const WriteCompleteCallback& cb)
+	{
+		writeCompleteCallback_ = cb;
+	}
 
 private:
 	/// Not thread safe, but in loop
@@ -53,6 +60,7 @@ private:
 	boost::scoped_ptr<Acceptor> acceptor_; // avoid revealing Acceptor
 	ConnectionCallback connectionCallback_;
 	MessageCallback messageCallback_;
+	WriteCompleteCallback writeCompleteCallback_;
 	bool started_;
 	int nextConnId_;  // always in loop thread
 	ConnectionMap connections_;
