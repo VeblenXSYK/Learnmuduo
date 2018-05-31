@@ -12,6 +12,10 @@ void onConnection(const muduo::TcpConnectionPtr& conn)
 		printf("onConnection(): new connection [%s] from %s\n",
 		       conn->name().c_str(),
 		       conn->peerAddress().toHostPort().c_str());
+			   
+		//模拟服务进程繁忙没有及时处理对方断开连接的事件
+		::sleep(5);
+		
 		conn->send(message1);
 		conn->send(message2);
 		conn->shutdown();

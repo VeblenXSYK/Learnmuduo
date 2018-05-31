@@ -120,7 +120,7 @@ void TcpConnection::connectEstablished()
 void TcpConnection::connectDestroyed()
 {
 	loop_->assertInLoopThread();
-	assert(state_ == kConnected);
+	assert(state_ == kConnected || state_ == kDisconnecting);
 	setState(kDisconnected);
 	channel_->disableAll();
 	//LOG_DEBUG << "TcpConnection::connectDestroyed " << shared_from_this().use_count();
@@ -177,7 +177,7 @@ void TcpConnection::handleClose()
 {
 	loop_->assertInLoopThread();
 	LOG_TRACE << "TcpConnection::handleClose state = " << state_;
-	assert(state_ == kConnected);
+	assert(state_ == kConnected || state_ == kDisconnecting);
 	// we don't close fd, leave it to dtor, so we can find leaks easily.
 	channel_->disableAll();
 	// must be the last line
