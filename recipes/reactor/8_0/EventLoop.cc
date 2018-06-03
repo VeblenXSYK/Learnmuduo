@@ -5,7 +5,8 @@
 #include "EventLoop.h"
 #include "TimerQueue.h"
 #include "Channel.h"
-#include "Poller.h"
+//#include "Poller.h"
+#include "EPoller.h"
 #include "logging/Logging.h"
 
 using namespace muduo;
@@ -50,7 +51,8 @@ EventLoop::EventLoop()
 				  quit_(false),
 				  callingPendingFunctors_(false),
 				  threadId_(CurrentThread::tid()),
-				  poller_(new Poller(this)),
+				  //poller_(new Poller(this)),
+				  poller_(new EPoller(this)),
 				  timerQueue_(new TimerQueue(this)),			//创建timerfd
 				  wakeupFd_(createEventfd()),					//创建eventfd
 				  wakeupChannel_(new Channel(this, wakeupFd_))

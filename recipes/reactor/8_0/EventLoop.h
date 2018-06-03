@@ -13,7 +13,8 @@ namespace muduo
 {
 
 class Channel;
-class Poller;
+//class Poller;
+class EPoller;
 class TimerQueue;
 
 class EventLoop : boost::noncopyable
@@ -89,7 +90,8 @@ private:
 	bool callingPendingFunctors_;			/* atomic */
 	const pid_t threadId_;
 	Timestamp pollReturnTime_;				//从poll返回的时刻
-	boost::scoped_ptr<Poller> poller_;
+	//boost::scoped_ptr<Poller> poller_;
+	boost::scoped_ptr<EPoller> poller_;
 	boost::scoped_ptr<TimerQueue> timerQueue_;
 	int wakeupFd_;
 	// unlike in TimerQueue, which is an internal class,
