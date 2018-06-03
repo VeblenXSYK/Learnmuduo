@@ -11,11 +11,12 @@ LIB_SRC = 			\
 	Socket.cc		\
 	SocketsOps.cc		\
 	TcpConnection.cc	\
+	TcpClient.cc		\
 	TcpServer.cc		\
 	Timer.cc		\
 	TimerQueue.cc
 BINARIES = test1 test2 test3 test4 test5 test6 \
-		   test7 test8 test9 test10 test11 test12
+		   test7 test8 test9 test10 test11 test12 test13
 
 all: $(BINARIES)
 
@@ -33,3 +34,4 @@ test9: test9.cc
 test10: test10.cc
 test11: test11.cc
 test12: test12.cc
+test13: test13.cc
