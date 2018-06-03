@@ -37,13 +37,16 @@ public:
 	                 Timestamp when,
 	                 double interval);
 
-	// void cancel(TimerId timerId);
+	void cancel(TimerId timerId);
+	void cancelInLoop(TimerId timerId);
 
 private:
 
 	// FIXME: use unique_ptr<Timer> instead of raw pointers.
 	typedef std::pair<Timestamp, Timer*> Entry;
 	typedef std::set<Entry> TimerList;
+	typedef std::pair<Timer*, int64_t> ActiveTimer;
+	typedef std::set<ActiveTimer> ActiveTimerSet;
 
 	void addTimerInLoop(Timer* timer);
 	// called when timerfd alarms
@@ -58,7 +61,12 @@ private:
 	const int timerfd_;
 	Channel timerfdChannel_;
 	// Timer list sorted by expiration
-	TimerList timers_;
+	TimerList timers_;						//保存的是目前有效的Timer的指针（按到期时间排序）
+	
+	bool callingExpiredTimers_;				//自注销标志
+	ActiveTimerSet activeTimers_;			//保存的是目前有效的Timer的指针（按对象地址排序）
+	ActiveTimerSet cancelingTimers_;		//保存自注销定时器
+	
 };
 
 }

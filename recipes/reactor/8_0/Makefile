@@ -2,6 +2,7 @@ LIB_SRC = 			\
 	Acceptor.cc		\
 	Buffer.cc		\
 	Channel.cc		\
+	Connector.cc	\
 	EventLoop.cc		\
 	EventLoopThread.cc	\
 	EventLoopThreadPool.cc \
@@ -13,11 +14,12 @@ LIB_SRC = 			\
 	TcpServer.cc		\
 	Timer.cc		\
 	TimerQueue.cc
-BINARIES = test1 test2 test3 test4 test5 test6 test7 test8 test9 test10 test11
+BINARIES = test1 test2 test3 test4 test5 test6 \
+		   test7 test8 test9 test10 test11 test12
 
 all: $(BINARIES)
 
-include ../reactor.mk
+include ../reactor_lib.mk
 
 test1: test1.cc
 test2: test2.cc
@@ -30,3 +32,4 @@ test8: test8.cc
 test9: test9.cc
 test10: test10.cc
 test11: test11.cc
+test12: test12.cc
