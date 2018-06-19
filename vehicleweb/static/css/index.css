@@ -1,0 +1,70 @@
+body {
+	padding-top: 50px;
+}
+
+#menuToggle>span.glyphicon {
+	cursor: pointer;
+}
+
+.menu {
+	position: absolute;
+	top: 50px;
+	right: 0px;
+	left: 0px;
+	bottom: 45px;
+}
+
+.menu .nav>li {
+	cursor: pointer;
+	border-bottom: 1px solid #e7e7e7;
+}
+
+.menu span.glyphicon-class,#menuToggle span.glyphicon-class {
+	margin-left: 15px;
+}
+
+.containers {
+	position: absolute;
+	background-color: #fff;
+	top: 50px;
+	right: 0px;
+	left: 60px;
+	bottom: 45px;
+	border-radius: 0px 0px 0px 0px;
+	border: 1px solid #e7e7e7;
+}
+
+.containers iframe {
+	border-radius: 5px 0px 0px 0px;
+}
+
+.noData {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 10;
+	background-color: white;
+	//background-image: url("../img/nodata.png");
+	background-repeat: no-repeat;
+	background-position-y: 4em;
+	border-radius: 5px 0px 0px 0px;
+}
+
+.noData>div {
+	margin-left: 450px;
+	position: relative;
+	top: 15em;
+}
+
+.noData>div>div.noData_title {
+	font-size: 16px;
+	font-weight: 700;
+	color: #707070;
+}
+
+.a-lg-25 {
+	font-size: 25px;
+}
+

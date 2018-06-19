@@ -1,0 +1,67 @@
+<html lang="zh-CN">
+<head>
+    <!-- Bootstrap -->
+    <meta charset=utf-8>
+
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/static/favicon.ico" rel="shortcut icon">
+    <script type="text/javascript" src="/static/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+	
+
+    <link rel="stylesheet" href="/static/css/index.css" type="text/css"></link>
+    <script type="text/javascript" src="/static/js/public.js"></script>
+    <script type="text/javascript" src="/static/js/index.js"></script>
+
+</head>
+
+<body>
+<nav class="topBar navbar navbar-default navbar-fixed-top" style="color: #fff;">
+    <div class="navbar-header">
+        <a id="menuToggle" class="navbar-brand">
+            <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
+            <span class="glyphicon-class">静态衡实时监测系统</span></a>
+    </div>
+    <nav class="collapse navbar-collapse bs-navbar-collapse">
+        <ul class="nav navbar-nav navbar-right" style="padding-right:2em;">
+            <li><a id="refreshTime">
+                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                <span class="glyphicon-class"></span></a></li>
+            <li><a id="sysstate">
+                <span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span>
+                <span class="glyphicon-class">动态无车...</span></a></li>
+        </ul>
+    </nav>
+</nav>
+<div class="menu">
+    <ul class="nav nav-pills nav-stacked">
+        <li role="presentation" data-url="Control.html">
+            <a class="a-lg-25"><span class="glyphicon glyphicon-console" aria-hidden="true"></span>
+                <span class="glyphicon-class">控制台</span></a>
+        </li>
+        <li role="presentation" data-url="Setting.html">
+            <a class="a-lg-25"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                <span class="glyphicon-class">设置</span></a>
+        </li>
+        <li role="presentation" data-url="Test.html">
+            <a class="a-lg-25">
+                <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                <span class="glyphicon-class">测试</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="containers">
+    <iframe id="contentFrame" src=""
+            style="width: 100%;height: 100%;border: 0px;">
+    </iframe>
+    <div class="noData"
+         style="width: 100%;height: 100%;border: 0px;display:none;">
+        <div>
+            <div class="noData_title">服务器连接异常，请检查网络状态...</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

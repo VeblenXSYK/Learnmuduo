@@ -1,0 +1,195 @@
+.alert {
+	margin-bottom: 0px;
+	padding: 5px
+}
+
+.panel-default>.panel-heading {
+	color: #000;
+	background-color: #fff;
+	border-color: #fff;
+}
+
+#list_grep_item {
+	margin-top: 20px;
+}
+
+.item_style {
+	font-weight: bold;
+}
+
+.well {
+	margin-top: 10px;
+}
+
+.floatRight {
+	float: right;
+}
+
+.mar_left_20 {
+	margin-left: 20px;
+}
+
+.mar_left_30 {
+	margin-left: 30px;
+}
+
+.label-define {
+	background-color: #4B4D4D;
+}
+
+.panel-body-highSetting {
+	padding: 0px;
+}
+
+.control-label-margin {
+	margin-top: 4px;
+}
+
+.form-horizontal .form-group {
+	margin-right: 0px;
+	margin-left: 0px;
+}
+
+.form-group {
+	margin-bottom: 10px;
+}
+
+.aligncenter {
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+.width_75 {
+	width: 78px;
+}
+
+.form-control[disabled],fieldset[disabled] .form-control {
+	cursor: auto;
+}
+
+.setting_title {
+	margin-right: 80px;
+	margin-left: 15px;
+	margin-top: 15px;
+	margin-bottom: 10px;
+}
+
+.page-header {
+	margin: 0px;
+}
+
+.noborder {
+	border: none;
+}
+
+.mar_top_10 {
+	margin-top: 10px;
+}
+
+.mar_0 {
+	margin-right: 0px;
+	margin-left: 0px;
+}
+
+.uploadStyle {
+	margin-bottom: 30px;
+	margin-left: 20px;
+	margin-top: 35px;
+}
+
+.upload_btn {
+	margin-left: 20px;
+}
+
+.ok_upload_btn {
+	margin-left: 10px;
+	display: none;
+}
+
+.noteStyle {
+	height: 150px;
+	padding: 15px;
+}
+
+.upload_info {
+	font-weight: bolder;
+	font-size: larger;
+}
+
+.well {
+	margin-top: 0px;
+}
+
+
+.cover {
+	padding: 0 1.5rem;
+}
+
+main-cs {
+	display: block;
+	width: 42rem;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 100px;
+	text-align:center;
+	margin-bottom: 100px;
+}
+
+#status-image {
+	width: 80px;
+	height: 80px;
+}
+
+.cover-heading {
+	margin-top: 20px;
+}
+
+.upload-btn-wrapper {
+	position: relative;
+	overflow: hidden;
+	display: inline-block;
+}
+
+.btn-cs {
+	border: 2px solid gray;
+	color: gray;
+	background-color: white;
+	padding: 8px 20px;
+	border-radius: 8px;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.upload-btn-wrapper input[type=file] {
+	font-size: 100px;
+	position: absolute;
+	left: 0;
+	top: 0;
+	opacity: 0;
+}
+
+#progress-wrp {
+	border: 1px solid #0099CC;
+	padding: 1px;
+	position: relative;
+	height: 30px;
+	border-radius: 3px;
+	margin: 10px;
+	text-align: left;
+	background: #fff;
+	box-shadow: inset 1px 3px 6px rgba(0, 0, 0, 0.12);
+}
+#progress-wrp .progress-bar{
+	height: 100%;
+	border-radius: 3px;
+	background-color: #f39ac7;
+	width: 0;
+	box-shadow: inset 1px 1px 10px rgba(0, 0, 0, 0.11);
+}
+#progress-wrp .status{
+	top:3px;
+	left:50%;
+	position:absolute;
+	display:inline-block;
+	color: #000000;
+}

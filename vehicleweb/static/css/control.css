@@ -1,0 +1,74 @@
+body {
+  //background-image: url("../images/background.jpg");
+  //-moz-background-size:40% 100%; /* 老版本的 Firefox */
+  //background-size:100% 100%;
+  //background-repeat:no-repeat;  
+
+  background-color:rgb(245,245,245);
+}
+
+#mainmenu {
+  margin-top: 40px;
+}
+
+#layout_basicinfo {
+}
+
+#layout_axleinfo {
+  margin-top: 1.4em;
+}
+
+#layout_showpic {
+  margin-top: 1.4em;
+}
+
+#layout_staticheck {
+}
+
+#layout_speedfix {
+  margin-top: 1.4em;
+}
+
+.paragraph-border {
+  margin-top:8%;
+}
+
+.btn-circle {  
+  width: 30px;  
+  height: 30px;  
+  text-align: center;  
+  padding: 6px 0;  
+  font-size: 12px;  
+  line-height: 1.428571429;
+  border-radius: 15px;
+}  
+
+.table-extend {
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  margin: 0;
+}
+
+#speed-body {
+  height: 222px;
+  width: 100%;
+}
+
+#button_startcheck,#button_stopcheck,#button_setzero {
+  width: 106px;
+}
+
+select#selectpicker {
+  width: 106px;
+}
+
+td  {
+  vertical-align : middle !important;
+}
+
+

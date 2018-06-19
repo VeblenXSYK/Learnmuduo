@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<title>Setting.html</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<script src="/static/js/jquery-1.11.3.min.js"></script>
+	<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css" />
+
+	<link rel="stylesheet" href="/static/css/setting.css" type="text/css"></link>
+	<script type="text/javascript" src="/static/js/public.js"></script>
+	<script type="text/javascript" src="/static/js/Upload.js"></script>
+	<script type="text/javascript" src="/static/js/Setting.js"></script>
+
+	<!--<script src="js/Setting.js"></script>-->
+</head>
+
+<body>
+<div>
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs" role="tablist">
+		<li class="nav-item active">
+			<a class="nav-link" href="#messages" aria-controls="messages" role="tab" data-toggle="tab" aria-controls="messages" aria-selected="true">系统设置</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link"  href="#verify" aria-controls="verify" role="tab" data-toggle="tab" aria-controls="verify" aria-selected="true">设备验证</a>
+		</li>
+	</ul>
+	<!-- Tab panes -->
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="messages">
+			<div class="panel panel-default noborder">
+				<div class="panel-body panel-body-highSetting well">
+					<form class="form-horizontal mar_top_10">
+						<div class="form-group" style="margin: 0px;">
+							<label
+								   class="col-md-2 col-sm-2 control-label control-label-margin ">设备标识</label>
+							<div class="col-md-4 col-sm-4 input-group">
+								<input type="text" class="form-control" id="device_id"
+									   placeholder="">
+							</div>
+						</div>
+						<div class="form-group">
+							<label
+								   class="col-md-2 col-sm-2 control-label control-label-margin "></label>
+							<div class="col-md-4 col-sm-4 input-group">
+								<small class="help-block">设备标识信息的字符串：省-路-站-道</small>
+							</div>
+						</div>
+						<div class="form-group" style="margin: 0px;">
+							<label
+								   class="col-md-2 col-sm-2 control-label control-label-margin ">称台类型</label>
+							<div class="col-md-4 col-sm-4 input-group">
+								<input type="text" class="form-control" id="channel_hop_interval"
+									   placeholder="">
+							</div>
+						</div>
+						<div class="form-group">
+							<label
+								   class="col-md-2 col-sm-2 control-label control-label-margin "></label>
+							<div class="col-md-4 col-sm-4 input-group">
+								<small class="help-block">1(整车衡) or 2(轴组衡)</small>
+							</div>
+						</div>
+						<div class="form-group" style="margin: 0px;">
+							<label class="col-md-2 col-sm-2 control-label control-label-margin ">传感器数目</label>
+							<div class="col-md-4 col-sm-4 input-group">
+								<input type="text" class="form-control" id="lowest_power"
+									   placeholder="" aria-describedby="lowest_power_unit">
+								<span class="input-group-addon" id="lowest_power_unit">个</span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 col-sm-2 control-label control-label-margin "></label>
+							<div class="col-md-4 col-sm-4 input-group">
+								<small class="help-block"></small>
+							</div>
+						</div>
+						<div class="form-group" style="margin: 0px;">
+							<label class="col-md-2 col-sm-2 control-label control-label-margin ">远程服务端地址</label>
+							<div class="col-md-4 col-sm-4 input-group">
+								<input type="text" class="form-control" id="max_hijack_stat"
+									   placeholder="">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 col-sm-2 control-label control-label-margin "></label>
+							<div class="col-md-4 col-sm-4 input-group">
+								<small class="help-block">例如：192.168.1.1</small>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 col-sm-2 control-label control-label-margin ">远程服务端JSon端口</label>
+							<div class="col-md-4 col-sm-4 input-group">
+								<input type="text" class="form-control" id="disk_threshold"
+									   placeholder="">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 col-sm-2 control-label control-label-margin "></label>
+							<div class="col-md-4 col-sm-4 input-group">
+								<small class="help-block">端口限定于1--65535，用于传输json数据</small>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 col-sm-2 control-label control-label-margin ">远程服务端Sensor端口</label>
+							<div class="col-md-4 col-sm-4 input-group">
+								<input type="text" class="form-control" id="port_sensor"
+									   placeholder="">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 col-sm-2 control-label control-label-margin "></label>
+							<div class="col-md-4 col-sm-4 input-group">
+								<small class="help-block">端口限定于1--65535，用于传输Sensor文件</small>
+							</div>
+						</div>
+						<div
+								class="col-md-offset-2 col-sm-offset-2 col-md-4 col-sm-4 aligncenter">
+							<button id="high_setting_save" type="button"
+									class="btn btn-info width_75">设置</button>
+							<button id="high_setting_edit" type="button"
+									class="btn btn-success mar_left_30 width_75">编辑</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div role="tabpanel" class="tab-pane" id="verify">
+			<div class="panel panel-default noborder">
+				<div class="panel-body panel-body-highSetting well">
+					<main-cs role="main" class="inner cover">
+						<div>
+							<img id="status-image" src="">
+						</div>
+						<h4 id="verify-status"></h4>
+						<div id="upload-wraper">
+							<div class="upload-btn-wrapper" id="upload-license">
+								<button class="btn-cs" id="upload-btn-input">上传文件</button>
+								<input type="file" class="custom-file-input" id="upload-license-input" accept="text/xml">
+							</div>
+							<div>
+								<button id="upload-btn">提交</button>
+							</div>
+						</div>
+					</main-cs>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="/static/css/Test.css" type="text/css"></link>
+    <script type="text/javascript" src="/static/js/public.js"></script>
+    <script type="text/javascript" src="/static/js/Test.js"></script>
+</head>
+<body>
+
+<div id="mainmenu" class="container-fluid">
+    <div class="row clearfix">
+        <div class="col-md-2">
+            <button id="start-test-btn" type="button" class="btn btn-light">开始测试</button>
+        </div>
+        <div class="col-md-2">
+            <button id="stop-test-btn" type="button" class="btn btn-success">结束测试</button>
+        </div>
+        <div class="col-md-2">
+            <a id="download-btn" class="btn btn-primary" href="../data/truckscale.dat" role="button" download="data.dat">下载测试文件</a>
+        </div>
+        <div class="col-md-6" style="text-align: center">
+            <span id="test-stat-info"></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
