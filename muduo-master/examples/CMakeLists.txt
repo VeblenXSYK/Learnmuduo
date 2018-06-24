@@ -19,7 +19,7 @@ add_subdirectory(roundtrip)
 add_subdirectory(simple)
 #add_subdirectory(socks4a)
 #add_subdirectory(sudoku)
-#add_subdirectory(twisted/finger)
+add_subdirectory(twisted/finger)
 #add_subdirectory(wordcount)
 #add_subdirectory(zeromq)
 
