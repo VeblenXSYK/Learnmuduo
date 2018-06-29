@@ -59,7 +59,7 @@ typedef struct _WIN_AXLE
 }EZ_AXLE;
 
 #define		MAX_AXLE_NUM		8
-typedef struct _vehicle
+typedef struct _VEHICLE
 {
 	CHAR                cDir;				/*行车方向，前进为+，后退为－*/
 	CHAR                cDircSet;			/*待定*/
@@ -76,5 +76,24 @@ typedef struct _vehicle
 	CHAR                cFn[256];			/*波形文件名*/
 	CHAR                nPad2[340];			/*填充*/
 }EZ_VEHICLE;
+
+//单个传感器信息
+typedef struct _SensorInfo
+{
+	int peaknum;								//波峰数目
+	int startendindex[MAX_AXLE_NUM][2];			//开始与结束记录点
+	int sumarea[MAX_AXLE_NUM];					//波形面积
+	int datacount;								//收集的数据个数
+	double sensordata[80000];					//收集的传感器信息
+	double smoothdata[MAX_AXLE_NUM][8000];		//经过平滑后的数据
+}SensorInfo;
+
+//原始数据信息
+#define MAX_LANE_NUM		5					//最多5个车道
+typedef struct _OriginDataInfo
+{
+	int circleinfo[MAX_LANE_NUM][2];			//前后线圈信息
+	SensorInfo sensorinfo[MAX_LANE_NUM][6];		//每个车道6个传感器
+}OriginDataInfo;
 
 #endif
