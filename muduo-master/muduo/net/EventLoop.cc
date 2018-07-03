@@ -28,7 +28,8 @@ namespace
 {
 __thread EventLoop* t_loopInThisThread = 0;
 
-const int kPollTimeMs = 10000;
+//const int kPollTimeMs = 10000;
+const int kPollTimeMs = 5000;
 
 int createEventfd()
 {

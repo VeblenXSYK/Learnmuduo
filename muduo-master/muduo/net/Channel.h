@@ -41,6 +41,10 @@ class Channel : boost::noncopyable
   ~Channel();
 
   void handleEvent(Timestamp receiveTime);
+  void handleTimeoutEvent()
+  {  if (timeoutCallback_) timeoutCallback_(); }
+  void setTimeoutCallback(const EventCallback& cb)
+  { timeoutCallback_ = cb; }
   void setReadCallback(const ReadEventCallback& cb)
   { readCallback_ = cb; }
   void setWriteCallback(const EventCallback& cb)
@@ -116,6 +120,7 @@ class Channel : boost::noncopyable
   EventCallback writeCallback_;
   EventCallback closeCallback_;
   EventCallback errorCallback_;
+  EventCallback timeoutCallback_;
 };
 
 }

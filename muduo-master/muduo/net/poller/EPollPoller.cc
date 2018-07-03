@@ -75,6 +75,14 @@ Timestamp EPollPoller::poll(int timeoutMs, ChannelList* activeChannels)
   else if (numEvents == 0)
   {
     LOG_TRACE << "nothing happened";
+	std::map<int, Channel*>::iterator iter;
+    iter = channels_.begin();
+    while(iter != channels_.end()) 
+	{
+		//执行超时回调函数
+		iter->second->handleTimeoutEvent();
+        iter++;
+    }
   }
   else
   {
