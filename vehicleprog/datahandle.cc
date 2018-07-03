@@ -5,10 +5,19 @@
 #include "common.h"
 #include "protocol.h"
 #include "dataanalysis.h"
+#include "recvdata_ad.h"
+
+#include <boost/bind.hpp>
 
 #include <muduo/base/Logging.h>
+#include <muduo/net/Socket.h>
+#include <muduo/net/SocketsOps.h>
+#include <muduo/net/Channel.h>
+#include <muduo/net/EventLoop.h>
 
 using namespace alglib;
+using namespace muduo;
+using namespace muduo::net;
 
 /*
 	初始化输入文件
@@ -209,7 +218,7 @@ int DataHandle::sumArea()
 	return 0;
 }
 
-void DataHandle::startFileDataComputeHandle(const std::string filename)
+void DataHandle::recvFiledataComputeHandle(const std::string filename)
 {
 	initInputData(filename);
 	
@@ -227,14 +236,47 @@ void DataHandle::startFileDataComputeHandle(const std::string filename)
 	sumArea();
 }
 
-void DataHandle::startNetDataComputeHandle()
+/*
+	有数据时则回调
+*/
+void DataHandle::netDataReadCallback(int sockfd, muduo::Timestamp receiveTime)
 {
-	while(1)
+	size_t frameLen = 1385;
+	unsigned char message[frameLen];
+	
+	ssize_t nr = sockets::read(sockfd, message, sizeof message);
+	if (nr < 0) 
 	{
+		LOG_SYSERR << "::read";
+	} 
+	else if (implicit_cast<size_t>(nr) == frameLen) 
+	{
+		LOG_INFO << "Recv valid data";
+	} 
+	else 
+	{
+		LOG_ERROR << "Expect " << frameLen << " bytes, received " << nr << " bytes.";
 	}
 }
 
-void DataHandle::startSendVehicleHandle()
+/*
+	接收AD板网络数据并处理的线程
+*/
+void DataHandle::recvNetdataComputeHandle()
+{
+	EventLoop loop;
+	InetAddress serverAddr("168.1.5.95", 7);
+	
+	RecvAD recvad(&loop, serverAddr, this);
+	recvad.start();
+
+	loop.loop();
+}
+
+/*
+	发送车辆信息给上位机的线程
+*/
+void DataHandle::sendVehicleInfoHandle()
 {
 	while(1)
 	{
@@ -251,7 +293,7 @@ void DataHandle::startSendVehicleHandle()
 			
 			if(ez.use_count() > 0)
 			{
-				LOG_INFO << "startSendVehicleHandle "
+				LOG_INFO << "sendVehicleInfoHandle "
 					<< "Axlecount:" << static_cast<int>(ez->cAxleCount)
 					<< " Weight:" << ez->fWeight
 					<< " Speed:" << ez->fV;
@@ -263,4 +305,3 @@ void DataHandle::startSendVehicleHandle()
 		sleep(4);
 	}
 }
-

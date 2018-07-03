@@ -22,11 +22,10 @@ public:
 	int ssaSmooth2(double *addr, int size);
 	int sumArea();
 	
-	void startFileDataComputeHandle(const std::string filename);
-	
-	void startNetDataComputeHandle();
-	
-	void startSendVehicleHandle();
+	void recvFiledataComputeHandle(const std::string filename);
+	void recvNetdataComputeHandle();
+	void sendVehicleInfoHandle();
+	void netDataReadCallback(int sockfd, muduo::Timestamp receiveTime);
 	
 	SensorInfo *getSensorInfo(int carlane, int senum)
 	{

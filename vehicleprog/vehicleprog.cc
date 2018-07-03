@@ -10,8 +10,9 @@
 
 int main(int argc, char *argv[])
 {
+	LOG_INFO << argv[0] << " run";
 	
-	//启动服务端线程
+	//启动Tcp服务端为主线程
 	muduo::net::EventLoop loop;
 	muduo::net::InetAddress listenAddr(8000);
 	boost::shared_ptr<CommServer> server(new CommServer(&loop, listenAddr, 1));
@@ -21,20 +22,20 @@ int main(int argc, char *argv[])
 	
 	if (argc == 2) 
 	{	
-		//开启文件数据处理
-		dh->startFileDataComputeHandle(argv[1]);
+		//开启接收文件数据处理
+		dh->recvFiledataComputeHandle(argv[1]);
 		exit(0);
 	} 
 	else 
 	{
-		//开启网络数据处理线程
-		muduo::Thread dataHandleThread(boost::bind(&DataHandle::startNetDataComputeHandle, get_pointer(dh)));
-		dataHandleThread.start();
+		//开启接收网络数据计算线程
+		muduo::Thread recvNetdataComputeThread(boost::bind(&DataHandle::recvNetdataComputeHandle, get_pointer(dh)), "recvNetdataThread");
+		recvNetdataComputeThread.start();
 	}
 	
-	//开启数据发送线程
-	muduo::Thread sendHandleThread(boost::bind(&DataHandle::startSendVehicleHandle, get_pointer(dh)));
-	sendHandleThread.start();
+	//开启发送车辆信息线程
+	muduo::Thread sendVehicleInfoThread(boost::bind(&DataHandle::sendVehicleInfoHandle, get_pointer(dh)), "sendVehicleThread");
+	sendVehicleInfoThread.start();
 
 	loop.loop();
 }
