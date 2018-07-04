@@ -5,7 +5,7 @@ ALGLIB = ./alglib
 TARGET = VehileProg
 
 CXXFLAGS = -g -O0 -I$(MUDUO_INCLUDE) -I$(ALGLIB)
-LDFLAGS = -L$(MUDUO_LIBRARY) -lmuduo_net -lmuduo_base -L$(ALGLIB) -lalglib -lpthread -lrt
+LDFLAGS = -L$(MUDUO_LIBRARY) -lmuduo_net -lmuduo_base -L$(ALGLIB) -lalglib -lpthread -lrt -lconfig++
 SRCS = ${wildcard *.cc}
 
 all: $(TARGET)

@@ -1,4 +1,6 @@
 #include <unistd.h>
+
+#include <muduo/base/Singleton.h>
 #include <muduo/base/Thread.h>
 #include <muduo/base/Logging.h>
 #include <muduo/net/EventLoop.h>
@@ -7,10 +9,14 @@
 
 #include "commserver.h"
 #include "datahandle.h"
+#include "cfg_handle.h"
 
 int main(int argc, char *argv[])
 {
 	LOG_INFO << argv[0] << " run";
+	
+	//加载配置文件
+	muduo::Singleton<CfgHandle>::instance().loadFileInfo(CfgHandle::CFG_PATH);
 	
 	//启动Tcp服务端为主线程
 	muduo::net::EventLoop loop;
