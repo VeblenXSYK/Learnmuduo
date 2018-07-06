@@ -282,6 +282,8 @@ void DataHandle::sendVehicleInfoHandle()
 	{
 		{
 			Ez_VehiclePtr ez;
+			
+			//从m_queue_vehicle中取数据
 			{
 				muduo::MutexLockGuard lock(mutex_);
 				if(!m_queue_vehicle.empty())
@@ -291,15 +293,17 @@ void DataHandle::sendVehicleInfoHandle()
 				}
 			}
 			
+			//发送数据给客户端
 			if(ez.use_count() > 0)
 			{
 				LOG_INFO << "sendVehicleInfoHandle "
 					<< "Axlecount:" << static_cast<int>(ez->cAxleCount)
 					<< " Weight:" << ez->fWeight
 					<< " Speed:" << ez->fV;
+					
+				commserv_->sendVehicleData(get_pointer(ez));
 			}
-			
-			commserv_->sendVehicleData(get_pointer(ez));
+	
 		}
 		
 		sleep(4);

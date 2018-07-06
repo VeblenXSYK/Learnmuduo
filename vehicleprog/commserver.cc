@@ -5,11 +5,11 @@
 
 
 CommServer::CommServer(muduo::net::EventLoop* loop,
-                       const muduo::net::InetAddress& listenAddr, 
-					   int maxConnections)
+                       const muduo::net::InetAddress& listenAddr)
 	: server_(loop, listenAddr, "CommServer"),
-	  numConnected_(0),
-	  kMaxConnections_(maxConnections)
+	  kMaxConnections_(1),
+	  numForeignConnected_(0),
+	  numLocalConnected_(0)
 {
 	server_.setConnectionCallback(boost::bind(&CommServer::onConnection, this, _1));
 	server_.setMessageCallback(boost::bind(&CommServer::onMessage, this, _1, _2, _3));
@@ -20,35 +20,50 @@ void CommServer::start()
 	server_.start();
 }
 
-void CommServer::onConnection(const muduo::net::TcpConnectionPtr& conn)
+void CommServer::onConnection(const muduo::net::TcpConnectionPtr &conn)
 {
 	LOG_INFO << "CommServer - " << conn->peerAddress().toIpPort() << " -> "
 	         << conn->localAddress().toIpPort() << " is "
 	         << (conn->connected() ? "UP" : "DOWN");
-			 
-	// LOG_INFO << "conn.use_count:" << conn.use_count();
-	// LOG_INFO << "conn_.use_count:" << conn_.use_count();
 	
 	//当有新连接上来时，断开先前的连接
 	if (conn->connected()) 
 	{
-		++numConnected_;
-		if (numConnected_ > kMaxConnections_) 
-		{
-			conn_->shutdown();
-			conn_->forceCloseWithDelay(3.0);  // > round trip of the whole Internet.
-			conn_.reset();
-		}
+		muduo::MutexLockGuard lock(mutex_);
 		
-		conn_ = conn;
+		//根据连接上来的地址进行相应的处理
+		if (conn->peerAddress().toIp() == "127.0.0.1")
+		{
+			++numLocalConnected_;
+			if (numLocalConnected_ > kMaxConnections_)
+			{
+				localconn_->shutdown();
+				localconn_->forceCloseWithDelay(3.0);  // > round trip of the whole Internet.
+				localconn_.reset();
+			}
+			localconn_ = conn;
+		}
+		else
+		{
+			++numForeignConnected_;
+			if (numForeignConnected_ > kMaxConnections_) 
+			{
+				foreignconn_->shutdown();
+				foreignconn_->forceCloseWithDelay(3.0);  // > round trip of the whole Internet.
+				foreignconn_.reset();
+			}
+			
+			foreignconn_ = conn;
+		}
 	} 
 	else 
 	{
-		--numConnected_;
+		if (conn->peerAddress().toIp() == "127.0.0.1")
+			--numLocalConnected_;
+		else
+			--numForeignConnected_;
 	}
-	
-	// LOG_INFO << "conn.use_count:" << conn.use_count();
-	// LOG_INFO << "conn_.use_count:" << conn_.use_count();
+
 }
 
 void CommServer::onMessage(const muduo::net::TcpConnectionPtr& conn,
@@ -63,7 +78,11 @@ void CommServer::onMessage(const muduo::net::TcpConnectionPtr& conn,
 
 void CommServer::sendVehicleData(const void* vehicledata)
 {
-	if(conn_.use_count() > 0)
-		conn_->send(vehicledata, sizeof(EZ_VEHICLE));
+	muduo::MutexLockGuard lock(mutex_);
+	
+	if(foreignconn_.use_count() > 0)
+		foreignconn_->send(vehicledata, sizeof(EZ_VEHICLE));
+	if(localconn_.use_count() > 0)
+		localconn_->send(vehicledata, sizeof(EZ_VEHICLE));
 } 
 

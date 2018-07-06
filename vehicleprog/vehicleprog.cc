@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 	//启动Tcp服务端为主线程
 	muduo::net::EventLoop loop;
 	muduo::net::InetAddress listenAddr(8000);
-	boost::shared_ptr<CommServer> server(new CommServer(&loop, listenAddr, 1));
+	boost::shared_ptr<CommServer> server(new CommServer(&loop, listenAddr));
 	server->start();
 	
 	boost::shared_ptr<DataHandle> dh(new DataHandle(server));
