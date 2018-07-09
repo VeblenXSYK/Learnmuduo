@@ -9,7 +9,6 @@ import datetime
 import WWSGC
 import SystemConfig
 import SystemStatus
-import HttpClient
 import DBHandle
 
 class CVHUtility():
@@ -43,9 +42,6 @@ class CVHUtility():
 		#设置gska、gskb
 		self.SysStat.Setgska(self.SysConf.gska)
 		self.SysStat.Setgskb(self.SysConf.gskb)
-		
-		#创建Http客户端对象
-		self.HttpCli = HttpClient.CHttpClient(self.SysConf.RemoteIP(), self.SysConf.RemoteDataPort(), self.SysConf.RemoteCheckPort())
 	 
 		return True		
 

@@ -92,10 +92,6 @@ def WR_SYSTEM_SetSysConfig():
 		#修改配置
 		GO_VHUtility.SysConf.ModSysConfig(sysconfiginfo)
 		
-		#修改请求服务端的URL
-		if modify_httpurl == 1:
-			GO_VHUtility.HttpCli.GenerateURL(remoteip, jsonport, recordport)
-		
 		#判断是否有必要重启后台检测程序
 		if restart_checkprogram == 1:
 			WWSGC.KillProcByName("TruckScale_check")
