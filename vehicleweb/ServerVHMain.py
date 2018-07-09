@@ -70,7 +70,7 @@ class CServerVHMain:
 		
 		#运行Web服务
 		self.__Inited = True
-		self.__RunWebServer(GO_VHUtility.SysConf.WebIP(), GO_VHUtility.SysConf.WebPort())
+		self.__RunWebServer(GO_VHUtility.SysConf.WebIp, GO_VHUtility.SysConf.WebPort)
 
 	def Stop(self):
 

@@ -32,9 +32,6 @@ def WR_SYSTEM_GetSysConfig():
 	sysconfiginfo["devid"] = GO_VHUtility.SysStat.GetDevID()
 	sysconfiginfo["weightype"] = GO_VHUtility.SysStat.GetWeighType()
 	sysconfiginfo["senum"] = GO_VHUtility.SysStat.GetSenum()
-	sysconfiginfo["remoteip"] = GO_VHUtility.SysConf.RemoteIP()
-	sysconfiginfo["jsonport"] = GO_VHUtility.SysConf.RemoteDataPort()
-	sysconfiginfo["recordport"] = GO_VHUtility.SysConf.RemoteCheckPort()
 	
 	return json.dumps(sysconfiginfo)
 	
@@ -47,12 +44,8 @@ def WR_SYSTEM_SetSysConfig():
 	devid = request.query.get('devid', default='')
 	weightype = request.query.get('weightype', default=1, type=int)
 	senum = request.query.get('senum', default=1, type=int)
-	remoteip = request.query.get('remoteip', default='')
-	jsonport = request.query.get('jsonport', default='6060', type=int)
-	recordport = request.query.get('recordport', default='8080', type=int)
 
 	modify_config = 0
-	modify_httpurl = 0
 	restart_checkprogram = 0
 	
 	#判断是否修改过
@@ -67,27 +60,12 @@ def WR_SYSTEM_SetSysConfig():
 		GO_VHUtility.SysStat.SetSenum(senum)
 		restart_checkprogram = 1
 		modify_config = 1
-	if remoteip != GO_VHUtility.SysConf.RemoteIP():
-		GO_VHUtility.SysConf.SetRemoteIP(remoteip)
-		modify_config = 1
-		modify_httpurl = 1
-	if jsonport != GO_VHUtility.SysConf.RemoteDataPort():
-		GO_VHUtility.SysConf.SetRemoteDataPort(jsonport)
-		modify_config = 1
-		modify_httpurl = 1
-	if recordport != GO_VHUtility.SysConf.RemoteCheckPort():
-		GO_VHUtility.SysConf.SetRemoteCheckPort(recordport)
-		modify_config = 1
-		modify_httpurl = 1
 		
 	if modify_config == 1:
 		sysconfiginfo = {}
 		sysconfiginfo["devid"] = devid
 		sysconfiginfo["weightype"] = str(weightype)
 		sysconfiginfo["senum"] = str(senum)
-		sysconfiginfo["remoteip"] = remoteip
-		sysconfiginfo["jsonport"] = str(jsonport)
-		sysconfiginfo["recordport"] = str(recordport)
 		
 		#修改配置
 		GO_VHUtility.SysConf.ModSysConfig(sysconfiginfo)

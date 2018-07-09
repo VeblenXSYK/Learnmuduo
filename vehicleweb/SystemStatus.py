@@ -237,7 +237,7 @@ class CSystemStatus():
 				weight, modweight, chargeweight, chargeaxlenum, \
 				speed, axlenum, seninfo, senadd, axlew, axles, timestamp = \
 				struct.unpack('4ciiiifi12s24s32s32si', datainfo)
-		self.carinfo["carmodel"] = WWSGC.GetCarModelStr(ord(carmodel))
+		self.carinfo["carmodel"] = carmodel
 		self.carinfo["weightype"] = self.weightype
 		self.carinfo["devid"] = self.devid
 		self.carinfo["weight"] = weight

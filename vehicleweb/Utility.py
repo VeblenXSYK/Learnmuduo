@@ -31,17 +31,17 @@ class CVHUtility():
 			logging.error('加载配置文件失败！')
 			return False
 			
-		if not self.DB.InitDB('127.0.0.1', 3306, 'root', '123456', 'vehicle'):
+		if not self.DB.InitDB(self.SysConf.DBHost, self.SysConf.DBPort, self.SysConf.DBUser, self.SysConf.DBPwd, self.SysConf.DBName):
 			logging.error('初始化数据库失败！')
 			return False
 			
 		#创建系统状态的对象
-		self.SysStat = SystemStatus.CSystemStatus(self.SysConf.weightype, self.SysConf.devid, \
-												  self.SysConf.devlegal, self.SysConf.senum)
+		self.SysStat = SystemStatus.CSystemStatus(self.SysConf.WeighType, self.SysConf.DevId, \
+												  self.SysConf.DevLegal, self.SysConf.SensorNum)
 			
 		#设置gska、gskb
-		self.SysStat.Setgska(self.SysConf.gska)
-		self.SysStat.Setgskb(self.SysConf.gskb)
+		self.SysStat.Setgska(1.0)
+		self.SysStat.Setgskb(1.0)
 	 
 		return True		
 

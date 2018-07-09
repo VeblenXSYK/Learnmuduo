@@ -15,10 +15,10 @@ import logging
 from random import Random
 
 """通用的目录"""
-GAOSU_ROOT = '/.gaosu'
-GAOSU_PROG_HOME = '/.gaosu/bin/'
-GAOSU_USRCNF_HOME = '/.gaosu/usrcnf/'
-GAOSU_OUTPUT_HOME = '/.gaosu/output/'
+GAOSU_ROOT = '/.vehicle'
+GAOSU_PROG_HOME = '/.vehicle/bin/'
+GAOSU_USRCNF_HOME = '/.vehicle/usrcnf/'
+GAOSU_OUTPUT_HOME = '/.vehicle/output/'
 
 
 """称台类型"""
@@ -65,14 +65,6 @@ ALLSENSOR_NORMAL = 0x70
 ONESENSOR_ERROR = 0x71
 ONESENSOR_ABORT = 0x72
 
-"""车型信息"""
-MODEL2_11 = 0x21
-MODEL2_12 = 0x22
-MODEL3_15 = 0x31
-MODEL4_125 = 0x41
-MODEL5_155 = 0x51 
-MODEL6_157 = 0x61
-
 
 def DIR_WebSites():
 	return os.path.join(GAOSU_ROOT, 'WebGUI')
@@ -87,23 +79,11 @@ def FILE_WebAxleData():
 
 	
 def FILE_OutLogPath():
-	return os.path.join(GAOSU_OUTPUT_HOME, 'serverlz.log')
+	return os.path.join(GAOSU_OUTPUT_HOME, 'servervh.log')
 	
 
 def FILE_SysCnf():
-	return os.path.join(GAOSU_USRCNF_HOME, 'Config.xml')
-	
-	
-def FILE_TruckSpeedK():
-	return os.path.join(GAOSU_USRCNF_HOME, 'TruckSpeedK.xml')
-	
-
-def FILE_AxleSpeedK():
-	return os.path.join(GAOSU_USRCNF_HOME, 'AxleSpeedK.xml')
-	
-	
-def FILE_MeterSpeedK():
-	return os.path.join(GAOSU_USRCNF_HOME, 'MeterSpeedK.xml')
+	return os.path.join(GAOSU_USRCNF_HOME, 'vehicle.cfg')
 	
 
 def FILE_Certificate():
@@ -208,26 +188,6 @@ def GetRandomStr(randomlength = 4):
 		str += chars[random.randint(0, length)]
 
 	return str
-	
-
-def GetCarModelStr(model):
-
-	"""获取车型字符串"""
-	
-	modelstr = ""
-	if model == MODEL2_11:
-		modelstr = "11"
-	elif model == MODEL2_12:
-		modelstr = "12"
-	elif model == MODEL3_15:
-		modelstr = "15"
-	elif model == MODEL4_125:
-		modelstr = "125"
-	elif model == MODEL5_155:
-		modelstr = "155"
-	elif model == MODEL6_157:
-		modelstr = "157"
-	return modelstr
 
 
 def TestConnection(httphost = 'http://www.baidu.com'):
