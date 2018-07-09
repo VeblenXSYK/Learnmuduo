@@ -11,6 +11,7 @@ import SystemConfig
 import SystemSpeedK
 import SystemStatus
 import HttpClient
+import DBHandle
 
 class CVHUtility():
 
@@ -23,6 +24,7 @@ class CVHUtility():
 			self.SysSpeedK = SystemSpeedK.CSysSpeedK(WWSGC.FILE_TruckSpeedK(), WWSGC.FILE_MeterSpeedK())
 		else:
 			self.SysSpeedK = SystemSpeedK.CSysSpeedK(WWSGC.FILE_AxleSpeedK(), WWSGC.FILE_MeterSpeedK())
+		self.DB = DBHandle.CDBHanlde()
 		self.SysStat = None
 		self.HttpCli = None
 
@@ -33,6 +35,10 @@ class CVHUtility():
 
 		if not self.SysConf.LoadConfig(WWSGC.FILE_SysCnf()):
 			logging.error('加载配置文件失败！')
+			return False
+			
+		if not self.DB.InitDB('127.0.0.1', 3306, 'root', '123456', 'vehicle'):
+			logging.error('初始化数据库失败！')
 			return False
 			
 		#创建系统状态的对象
