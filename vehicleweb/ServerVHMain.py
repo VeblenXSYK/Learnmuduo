@@ -14,7 +14,6 @@ import WebIF_System
 from wsgigzip import GzipMiddleware
 from Utility import GO_VHUtility
 from TcpClient import CTcpClient
-from RecordHandler import CRecordHandler
 
 
 class CServerVHMain:
@@ -26,7 +25,6 @@ class CServerVHMain:
 		self.__Inited = False
 		self.__HasRcvSigTerm = False
 		self.__TcpClient = CTcpClient()
-		self.__RecordHandler = None
 
 	def __RunWebServer(self, host = u'0.0.0.0', port = 80):
 
@@ -66,14 +64,9 @@ class CServerVHMain:
 		if not GO_VHUtility.InitUtility():
 			return self.__killProg()
 		
-		#开启Unix域客户端线程，用于与底层C++通信
+		#开启TCP客户端线程，用于与底层C++通信
 		self.__TcpClient.setDaemon(True)
 		self.__TcpClient.start()
-		
-		#开启RecordHandler线程，用于处理传感器记录
-		self.__RecordHandler = CRecordHandler()
-		self.__RecordHandler.setDaemon(True)
-		self.__RecordHandler.start()
 		
 		#运行Web服务
 		self.__Inited = True
@@ -85,6 +78,4 @@ class CServerVHMain:
 
 		cherrypy.engine.stop()
 		self.__TcpClient.Stop()
-		if self.__RecordHandler is not None:
-			self.__RecordHandler.Stop()
 		sys.exit(0)
