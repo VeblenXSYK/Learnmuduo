@@ -8,7 +8,6 @@ import logging
 import datetime
 import WWSGC
 import SystemConfig
-import SystemSpeedK
 import SystemStatus
 import HttpClient
 import DBHandle
@@ -20,10 +19,6 @@ class CVHUtility():
 	
 		self.SYS_START_TIME = datetime.datetime.now()
 		self.SysConf = SystemConfig.CSysConfig()
-		if self.SysConf.weightype == WWSGC.WEIGHTYPE_TRUCK:
-			self.SysSpeedK = SystemSpeedK.CSysSpeedK(WWSGC.FILE_TruckSpeedK(), WWSGC.FILE_MeterSpeedK())
-		else:
-			self.SysSpeedK = SystemSpeedK.CSysSpeedK(WWSGC.FILE_AxleSpeedK(), WWSGC.FILE_MeterSpeedK())
 		self.DB = DBHandle.CDBHanlde()
 		self.SysStat = None
 		self.HttpCli = None
@@ -48,10 +43,6 @@ class CVHUtility():
 		#设置gska、gskb
 		self.SysStat.Setgska(self.SysConf.gska)
 		self.SysStat.Setgskb(self.SysConf.gskb)
-		
-		#获取速度补偿系数
-		self.SysSpeedK.LoadSpeedK(self.SysSpeedK.path_raw, self.SysSpeedK.rawspeedk)
-		self.SysSpeedK.LoadSpeedK(self.SysSpeedK.path_meter, self.SysSpeedK.meterspeedk)
 		
 		#创建Http客户端对象
 		self.HttpCli = HttpClient.CHttpClient(self.SysConf.RemoteIP(), self.SysConf.RemoteDataPort(), self.SysConf.RemoteCheckPort())

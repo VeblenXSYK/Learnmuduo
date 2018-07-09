@@ -10,7 +10,6 @@ import logging
 import sys
 import cherrypy
 import WebIF_Main
-import WebIF_Meter
 import WebIF_System
 from wsgigzip import GzipMiddleware
 from Utility import GO_VHUtility
