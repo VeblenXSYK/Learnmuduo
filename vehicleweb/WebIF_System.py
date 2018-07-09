@@ -5,7 +5,7 @@ import time
 import WWSGC
 import json
 from subprocess import Popen
-from bottle import request
+from flask import request
 from Utility import GO_VHUtility
 from WebIF_Main import GO_VHWebSrv, WEB_JSON_Suc, WEB_JSON_Err
 
