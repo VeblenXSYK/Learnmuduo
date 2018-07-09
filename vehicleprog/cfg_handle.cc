@@ -9,7 +9,7 @@
 using namespace libconfig;
 using namespace muduo;
 
-std::string CfgHandle::CFG_PATH = "config/vehicle.cfg";
+std::string CfgHandle::CFG_PATH = "/.vehicle/usrcnf/vehicle.cfg";
 
 int CfgHandle::loadFileInfo(std::string filename)
 {
