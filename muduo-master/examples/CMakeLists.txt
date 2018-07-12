@@ -40,10 +40,10 @@ endif()
 
 if(PROTOBUF_FOUND)
   #add_subdirectory(ace/logging)
-  #add_subdirectory(protobuf)
+  add_subdirectory(protobuf)
 else()
-  #add_subdirectory(ace/logging EXCLUDE_FROM_ALL)
-  #add_subdirectory(protobuf EXCLUDE_FROM_ALL)
+  add_subdirectory(ace/logging EXCLUDE_FROM_ALL)
+  add_subdirectory(protobuf EXCLUDE_FROM_ALL)
 endif()
 
 if(GD_INCLUDE_DIR AND GD_LIBRARY)
