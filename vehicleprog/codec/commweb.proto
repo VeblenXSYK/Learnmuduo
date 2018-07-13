@@ -1,0 +1,31 @@
+package commweb;
+
+/*
+	底层发送给后台的信息
+*/
+message AxleInfo
+{
+	required float fW = 1;				//轴重
+	required float fV = 2;				//轴速度
+}
+
+message VehicleInfo {
+	optional int32 cDir = 1;			//行车方向
+	required int32 cAxleCount = 2;		//轴数
+	optional int32 cLevel = 3;			//称重质量信息
+	required int32 nType = 4;			//轴型
+	required float fW = 5;				//车辆总重
+	required float fV = 6;				//车辆速度
+
+	repeated AxleInfo aInfo = 7;		//每轴信息
+	optional string cColumn = 8;		//压过的列
+}
+
+
+/*
+	后台发送给底层的信息
+*/
+message CmdInfo
+{
+	required int32 type = 1;			//命令类型 @:请求Vehicle数据
+}
