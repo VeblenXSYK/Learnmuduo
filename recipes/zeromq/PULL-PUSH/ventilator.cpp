@@ -15,6 +15,7 @@ int main(void)
     zmq_connect(socket_to_sink, "tcp://localhost:5558");
     zmq_bind(socket_to_worker, "tcp://*:5557");
 
+	// 手动输入enter来启动任务分发的方式, 手动同步了工程队/包工头/监理，避免最先建立连接的工程队把所有任务都接收处理了
     printf("Press Enter when all workers get ready:");
     getchar();
     printf("Sending tasks to workers...\n");
@@ -32,7 +33,7 @@ int main(void)
         
 		memset(msgbuf, 0, sizeof(msgbuf));
         snprintf(msgbuf, sizeof(msgbuf), "%d", workload);
-        defsend(socket_to_worker, msgbuf);   	// 将工作分派给工程队
+        defsend(socket_to_worker, msgbuf);   	// 将工作分派给工程队(采用的是轮流/平均分配的方式，这是简单的负载均衡)
     }
 
     printf("Total expected cost: %d ms\n", total_ms);

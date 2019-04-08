@@ -24,7 +24,7 @@ int main(void)
 
     for(int i = 0; i < 100; ++i)
     {
-        // 接收100个worker干完活的消息
+        // 接收100个worker干完活的消息(接收多个工程队的消息，使用的是公平队列策略)
 		memset(buffer, 0, sizeof(buffer));
         len = zmq_recv(socket_to_worker_and_ventilator, buffer, sizeof(buffer)-1, 0);
         if(len == -1)
