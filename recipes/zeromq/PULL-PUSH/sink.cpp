@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-
+#include <assert.h>
 #include <zmq.h>
 
 #include "comm.h"
@@ -10,8 +10,23 @@ using namespace comm;
 int main(void)
 {
     void *context = zmq_ctx_new();
+	assert(context);
     void *socket_to_worker_and_ventilator = zmq_socket(context, ZMQ_PULL);
-    zmq_bind(socket_to_worker_and_ventilator, "tcp://*:5558");
+	assert(socket_to_worker_and_ventilator);
+	void *socket_to_worker_of_control = zmq_socket(context, ZMQ_PUB); 
+	assert(socket_to_worker_of_control);
+	
+    if(zmq_bind(socket_to_worker_and_ventilator, "tcp://*:5558") == -1)
+	{
+		printf("zmq_bind failed: %s\n", zmq_strerror(zmq_errno()));
+		return -1;
+	}
+	
+	if(zmq_bind(socket_to_worker_of_control, "tcp://*:5559") == -1)
+    {
+        printf("zmq_bind failed: %s\n", zmq_strerror(zmq_errno()));
+        return -1;
+    }
 
 	// 接收来自包工头的开始干活的消息
 	char buffer[256] = { 0 };
@@ -38,8 +53,15 @@ int main(void)
     }
 
     printf("Total elapsed time: %d ms]\n", (int)(getcurtimestamp() - start_time));
+	
+	if(defsend(socket_to_worker_of_control, "STOP") == -1)
+    {
+        printf("defsend failed: %s\n", zmq_strerror(zmq_errno()));
+        return -1;
+    }
 
     zmq_close(socket_to_worker_and_ventilator);
+	zmq_close(socket_to_worker_of_control);
     zmq_ctx_destroy(context);
 
     return 0;
