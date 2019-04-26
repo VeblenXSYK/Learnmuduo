@@ -10,10 +10,15 @@ int main(void)
 
     void *context = zmq_ctx_new();
     void *socket = zmq_socket(context, ZMQ_REQ);
+	
+	// 设置ZMQ重连时间
+	int reconntime = 5000;
+	zmq_setsockopt(socket, ZMQ_RECONNECT_IVL, &reconntime, sizeof(int));
+	
     zmq_connect(socket, "tcp://localhost:5555");
 
 	char buffer[10];
-    for(int i = 0; i < 3; ++i)
+    for(int i = 0; i < 30; ++i)
     {
         
         const char *requestMsg = "Hello";
