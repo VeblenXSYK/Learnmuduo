@@ -16,7 +16,7 @@ set(CXX_FLAGS
  -D_FILE_OFFSET_BITS=64
  -Wall
  -Wextra
- -Werror
+ #-Werror
  -Wconversion
  -Wno-unused-parameter
  -Wold-style-cast
@@ -27,6 +27,7 @@ set(CXX_FLAGS
  -march=native
  # -MMD
  # -std=c++0x
+ -std=c++11
  -rdynamic
  )
 if(CMAKE_BUILD_BITS EQUAL 32)
