@@ -73,6 +73,7 @@ public:
 		muduo::MutexLockGuard lock(mutex_);
 		boost::weak_ptr<Stock>& wkStock = stocks_[key];
 		pStock = wkStock.lock();
+		printf("pStock.use_count() = %ld", pStock.use_count());
 		if(!pStock)
 		{
 			pStock.reset(new Stock(key));
@@ -250,10 +251,10 @@ private:
 }
 
 //using version1::StockFactory;
-//using version2::StockFactory;
+using version2::StockFactory;
 //using version3::StockFactory;
 //using version4::StockFactory;
-using version5::StockFactory;
+//using version5::StockFactory;
 
 void testLongLiftFactory()
 {
@@ -285,8 +286,8 @@ int main()
 {
 	printf("Start\n");
 	
-	//testLongLiftFactory();
-	testShortLiftFactory();
+	testLongLiftFactory();
+	//testShortLiftFactory();
 	
 	printf("End\n");
 }
