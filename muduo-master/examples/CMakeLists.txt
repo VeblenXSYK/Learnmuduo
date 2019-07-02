@@ -21,7 +21,7 @@ add_subdirectory(socks4a)
 #add_subdirectory(sudoku)
 add_subdirectory(twisted/finger)
 #add_subdirectory(wordcount)
-#add_subdirectory(zeromq)
+add_subdirectory(zeromq)
 
 #如果某个target或subdirectory被设置为EXCLUDE_FROM_ALL属性,
 #那么这个target(或这个subdirectory中的所有target)就会被排除在all target列表之外，
