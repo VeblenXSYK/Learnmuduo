@@ -72,7 +72,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	// 忽略SIGPIPE信号
+	// 忽略SIGPIPE信号(避免服务进程意外退出)
 	signal(SIGPIPE, SIG_IGN);
 
 	struct event_base * base = event_base_new();

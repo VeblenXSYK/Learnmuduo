@@ -115,8 +115,8 @@ int main(int argc, char **argv)
 	event_base_free(base);
 	free(message);
 
-	printf("%lld total bytes read\n", total_bytes_read);
-	printf("%lld total messages read\n", total_messages_read);
+	printf("%jd total bytes read\n", total_bytes_read);
+	printf("%jd total messages read\n", total_messages_read);
 	printf("%.3f average messages size\n", (double)total_bytes_read / total_messages_read);
 	printf("%.3f MiB/s throughtput\n", (double)total_bytes_read / (timeout.tv_sec * 1024 * 1024));
 	

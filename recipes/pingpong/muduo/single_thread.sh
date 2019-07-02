@@ -2,10 +2,12 @@
 
 killall pingpong_server
 timeout=${timeout:-100}			# 如果timeout之前没有赋值，则默认为100
-bufsize=${bufsize:-16384}
+#bufsize=${bufsize:-16384}
+bufsize=${bufsize:-4096}
 nothreads=1
 
-for nosessions in 1 10 100 1000 10000; do
+#for nosessions in 1 10 100 1000 10000; do
+for nosessions in 1 10 100 1000; do
   sleep 5
   echo "Bufsize: $bufsize Threads: $nothreads Sessions: $nosessions"
   # taskset -c 指定在特定的CPU上运行

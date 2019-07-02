@@ -8,6 +8,3 @@ $(all):
 
 clean:
 	rm -f client server
-
-.PHONY: all clean
-
