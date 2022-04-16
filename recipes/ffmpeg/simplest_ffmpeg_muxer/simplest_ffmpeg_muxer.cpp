@@ -1,17 +1,6 @@
-/**
- * ×î¼òµ¥µÄ»ùÓÚFFmpegµÄÊÓÒôÆµ¸´ÓÃÆ÷
+ï»¿/**
+ *
  * Simplest FFmpeg Muxer
- *
- * À×Ïöæè Lei Xiaohua
- * leixiaohua1020@126.com
- * ÖÐ¹ú´«Ã½´óÑ§/Êý×ÖµçÊÓ¼¼Êõ
- * Communication University of China / Digital TV Technology
- * http://blog.csdn.net/leixiaohua1020
- *
- * ±¾³ÌÐò¿ÉÒÔ½«ÊÓÆµÂëÁ÷ºÍÒôÆµÂëÁ÷´ò°üµ½Ò»ÖÖ·â×°¸ñÊ½ÖÐ¡£
- * ³ÌÐòÖÐ½«AAC±àÂëµÄÒôÆµÂëÁ÷ºÍH.264±àÂëµÄÊÓÆµÂëÁ÷´ò°ü³É
- * MPEG2TS·â×°¸ñÊ½µÄÎÄ¼þ¡£
- * ÐèÒª×¢ÒâµÄÊÇ±¾³ÌÐò²¢²»¸Ä±äÊÓÒôÆµµÄ±àÂë¸ñÊ½¡£
  *
  * This software mux a video bitstream and a audio bitstream 
  * together into a file.
@@ -191,14 +180,14 @@ int main(int argc, char* argv[])
 		if(av_compare_ts(cur_pts_v, ifmt_ctx_v->streams[videoindex_v]->time_base, cur_pts_a, ifmt_ctx_a->streams[audioindex_a]->time_base) <= 0){
 			ifmt_ctx = ifmt_ctx_v;
 			stream_index = videoindex_out;
-			// ´ÓÊÓÆµÊäÈëÁ÷ÖÐÈ¡³öÊÓÆµµÄ AVPacket
+			// ????????????????????? AVPacket
 			if(av_read_frame(ifmt_ctx, &pkt) >= 0){
 				do{
 					in_stream  = ifmt_ctx->streams[pkt.stream_index];
 					out_stream = ofmt_ctx->streams[stream_index];
 
 					if(pkt.stream_index == videoindex_v){
-						// FIX£ºNo PTS (Example: Raw H.264)
+						// FIX??No PTS (Example: Raw H.264)
 						// Simple Write PTS
 						if(pkt.pts == AV_NOPTS_VALUE){
 							// Write PTS
@@ -221,14 +210,14 @@ int main(int argc, char* argv[])
 		}else{
 			ifmt_ctx = ifmt_ctx_a;
 			stream_index = audioindex_out;
-			// ´ÓÒôÆµÊäÈëÁ÷ÖÐÈ¡³öÒôÆµµÄ AVPacket
+			// ????????????????????? AVPacket
 			if(av_read_frame(ifmt_ctx, &pkt) >= 0){
 				do{
 					in_stream  = ifmt_ctx->streams[pkt.stream_index];
 					out_stream = ofmt_ctx->streams[stream_index];
 
 					if(pkt.stream_index == audioindex_a){
-						// FIX£ºNo PTS
+						// FIX??No PTS
 						// Simple Write PTS
 						if(pkt.pts == AV_NOPTS_VALUE){
 							// Write PTS

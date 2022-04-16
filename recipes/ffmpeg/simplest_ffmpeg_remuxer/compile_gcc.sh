@@ -10,4 +10,4 @@
 #
 #compile
 gcc simplest_ffmpeg_remuxer.cpp -g -o simplest_ffmpeg_remuxer -I /usr/local/include -L /usr/local/lib \
--lavformat -lavcodec -lavutil
+-lavformat -lavcodec -lavutil -lpthread -lm -ldl -lz -lswresample
