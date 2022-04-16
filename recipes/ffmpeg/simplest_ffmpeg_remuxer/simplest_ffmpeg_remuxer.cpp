@@ -1,16 +1,16 @@
 /**
- * ×î¼òµ¥µÄ»ùÓÚFFmpegµÄ·â×°¸ñÊ½×ª»»Æ÷
+ * æœ€ç®€å•çš„åŸºäºFFmpegçš„å°è£…æ ¼å¼è½¬æ¢å™¨
  * Simplest FFmpeg Remuxer
  *
- * À×Ïöæè Lei Xiaohua
+ * é›·éœ„éª… Lei Xiaohua
  * leixiaohua1020@126.com
- * ÖĞ¹ú´«Ã½´óÑ§/Êı×ÖµçÊÓ¼¼Êõ
+ * ä¸­å›½ä¼ åª’å¤§å­¦/æ•°å­—ç”µè§†æŠ€æœ¯
  * Communication University of China / Digital TV Technology
  * http://blog.csdn.net/leixiaohua1020
  *
- * ±¾³ÌĞòÊµÏÖÁËÊÓÆµ·â×°¸ñÊ½Ö®¼äµÄ×ª»»¡£
- * ĞèÒª×¢ÒâµÄÊÇ±¾³ÌĞò²¢²»¸Ä±äÊÓÒôÆµµÄ±àÂë¸ñÊ½¡£
- * ±¾³ÌĞòĞŞ¸Ä×ÔFFmpegµÄtutorial¡£
+ * æœ¬ç¨‹åºå®ç°äº†è§†é¢‘å°è£…æ ¼å¼ä¹‹é—´çš„è½¬æ¢ã€‚
+ * éœ€è¦æ³¨æ„çš„æ˜¯æœ¬ç¨‹åºå¹¶ä¸æ”¹å˜è§†éŸ³é¢‘çš„ç¼–ç æ ¼å¼ã€‚
+ * æœ¬ç¨‹åºä¿®æ”¹è‡ªFFmpegçš„tutorialã€‚
  *
  * This software converts a media file from one container format
  * to another container format without encoding/decoding video files.
@@ -21,20 +21,15 @@
 
 #define __STDC_CONSTANT_MACROS
 
-#ifdef __cplusplus
 extern "C"
 {
-#endif
 #include <libavformat/avformat.h>
-#ifdef __cplusplus
 };
-#endif
 
 
 int main(int argc, char* argv[])
 {
-	int i, ret;
-	int frame_index = 0;
+	int i, ret, frame_index = 0;
 	const char *in_filename  = "cuc_ieschool1.flv";// Input file URL
 	const char *out_filename = "cuc_ieschool1.mp4";// Output file URL
 	AVPacket pkt;
@@ -44,93 +39,101 @@ int main(int argc, char* argv[])
 	av_register_all();
 	
 	// Input
-	if ((ret = avformat_open_input(&ifmt_ctx, in_filename, 0, 0)) < 0) {
-		printf( "Could not open input file.");
-		goto end;
-	}
-	// ´ÓÃ½ÌåÎÄ¼şÖĞ»ñÈ¡Á÷ĞÅÏ¢
-	if ((ret = avformat_find_stream_info(ifmt_ctx, 0)) < 0) {
-		printf( "Failed to retrieve input stream information");
-		goto end;
-	}
-	// ÊäÈëĞÅÏ¢´òÓ¡
-	av_dump_format(ifmt_ctx, 0, in_filename, 0);
-	
-	// Output
-	avformat_alloc_output_context2(&ofmt_ctx, NULL, NULL, out_filename);
-	if (!ofmt_ctx) {
-		printf( "Could not create output context\n");
-		ret = AVERROR_UNKNOWN;
+	if ((ret = avformat_open_input(&ifmt_ctx, in_filename, 0, 0)) < 0) 
+	{
+		printf( "Could not open input file\n");
 		goto end;
 	}
 
-	for (i = 0; i < ifmt_ctx->nb_streams; i++) {
+	if ((ret = avformat_find_stream_info(ifmt_ctx, 0)) < 0) 
+	{
+		printf( "Failed to retrieve input stream information\n");
+		goto end;
+	}
+
+	av_dump_format(ifmt_ctx, 0, in_filename, 0);
+	
+	// Output
+	ret = avformat_alloc_output_context2(&ofmt_ctx, NULL, NULL, out_filename);
+	if (!ofmt_ctx) 
+	{
+		printf( "Could not create output context\n");
+		goto end;
+	}
+
+	for (i = 0; i < ifmt_ctx->nb_streams; i++) 
+	{
 		// Create output AVStream according to input AVStream
 		AVStream *in_stream = ifmt_ctx->streams[i];
-		AVStream *out_stream = avformat_new_stream(ofmt_ctx, in_stream->codec->codec);
-		if (!out_stream) {
+		AVStream *out_stream = avformat_new_stream(ofmt_ctx, NULL);
+		if (!out_stream) 
+		{
 			printf( "Failed allocating output stream\n");
-			ret = AVERROR_UNKNOWN;
 			goto end;
 		}
+
 		// Copy the settings of AVCodecContext
-		if (avcodec_copy_context(out_stream->codec, in_stream->codec) < 0) {
+		if (avcodec_parameters_copy(out_stream->codecpar, in_stream->codecpar) < 0) 
+		{
 			printf( "Failed to copy context from input to output stream codec context\n");
 			goto end;
 		}
 		
-		out_stream->codec->codec_tag = 0;
-		if (ofmt_ctx->oformat->flags & AVFMT_GLOBALHEADER)
-			out_stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
+		out_stream->codecpar->codec_tag = 0;
 	}
 	
-	// Êä³öĞÅÏ¢´òÓ¡
 	av_dump_format(ofmt_ctx, 0, out_filename, 1);
 	
 	// Open output file
 	ofmt = ofmt_ctx->oformat;
-	if (!(ofmt->flags & AVFMT_NOFILE)) {
+	if (!(ofmt->flags & AVFMT_NOFILE)) 
+	{
 		ret = avio_open(&ofmt_ctx->pb, out_filename, AVIO_FLAG_WRITE);
-		if (ret < 0) {
+		if (ret < 0) 
+		{
 			printf( "Could not open output file '%s'", out_filename);
 			goto end;
 		}
 	}
 	
 	// Write file header
-	if (avformat_write_header(ofmt_ctx, NULL) < 0) {
+	if (avformat_write_header(ofmt_ctx, NULL) < 0) 
+	{
 		printf( "Error occurred when opening output file\n");
 		goto end;
 	}
 
-	while (1) {
-		AVStream *in_stream, *out_stream;
+	while (1) 
+	{
 		// Get an AVPacket
 		ret = av_read_frame(ifmt_ctx, &pkt);
 		if (ret < 0)
+		{
 			break;
-		in_stream  = ifmt_ctx->streams[pkt.stream_index];
-		out_stream = ofmt_ctx->streams[pkt.stream_index];
+		}
 
-		// Convert PTS/DTS ÎªÊ²Ã´ĞèÒªÕâÑù×ª»»
+		AVStream *in_stream  = ifmt_ctx->streams[pkt.stream_index];
+		AVStream *out_stream = ofmt_ctx->streams[pkt.stream_index];
 		pkt.pts = av_rescale_q_rnd(pkt.pts, in_stream->time_base, out_stream->time_base, (AVRounding)(AV_ROUND_NEAR_INF|AV_ROUND_PASS_MINMAX));
 		pkt.dts = av_rescale_q_rnd(pkt.dts, in_stream->time_base, out_stream->time_base, (AVRounding)(AV_ROUND_NEAR_INF|AV_ROUND_PASS_MINMAX));
 		pkt.duration = av_rescale_q(pkt.duration, in_stream->time_base, out_stream->time_base);
 		pkt.pos = -1;
+
 		// Write
-		if (av_interleaved_write_frame(ofmt_ctx, &pkt) < 0) {
+		if (av_interleaved_write_frame(ofmt_ctx, &pkt) < 0) 
+		{
 			printf( "Error muxing packet\n");
 			break;
 		}
 		
-		av_free_packet(&pkt);
+		av_packet_unref(&pkt);
 		frame_index++;
 	}
 	
 	// Write file trailer
 	av_write_trailer(ofmt_ctx);
 	
-	printf("Write %8d frames to output file\n",frame_index);
+	printf("Write %8d frames to output file\n", frame_index);
 end:
 	// close input
 	avformat_close_input(&ifmt_ctx);
