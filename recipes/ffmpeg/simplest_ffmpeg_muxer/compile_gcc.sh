@@ -1,13 +1,13 @@
 #! /bin/sh
-#×î¼òµ¥µÄ»ùÓÚFFmpegµÄÊÓÒôÆµ¸´ÓÃÆ÷----ÃüÁîÐÐ±àÒë
+#ï¿½ï¿½òµ¥µÄ»ï¿½ï¿½ï¿½FFmpegï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½----ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½
 #Simplest FFmpeg Muxer----Compile in Shell 
 #
-#À×Ïöæè Lei Xiaohua
+#ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Lei Xiaohua
 #leixiaohua1020@126.com
-#ÖÐ¹ú´«Ã½´óÑ§/Êý×ÖµçÊÓ¼¼Êõ
+#ï¿½Ð¹ï¿½ï¿½ï¿½Ã½ï¿½ï¿½Ñ§/ï¿½ï¿½ï¿½Öµï¿½ï¿½Ó¼ï¿½ï¿½ï¿½
 #Communication University of China / Digital TV Technology
 #http://blog.csdn.net/leixiaohua1020
 #
 #compile
 gcc simplest_ffmpeg_muxer.cpp -g -o simplest_ffmpeg_muxer -I /usr/local/include -L /usr/local/lib \
--lavformat -lavcodec -lavutil
+-lavformat -lavcodec -lavutil -lpthread -lm -ldl -lz -lswresample
